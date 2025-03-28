@@ -116,12 +116,34 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
-                 context,
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
-      );
-    },
-    child: const Text('Ir a Login'),
-  ),
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                );
+              },
+              child: const Text('Ir a Login'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Alerta"),
+                      content: const Text("Soy Virgilio"),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text("Cerrar"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: const Text('Mostrar Alerta'),
+            ),
           ],
         ),
       ),
@@ -130,8 +152,6 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
-      
-        
     );
   }
 }
