@@ -113,15 +113,20 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             Text("Hola soy Diego"),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                 context,
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
-      );
-    },
-    child: const Text('Ir a Login'),
-  ),
+           ElevatedButton(
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
+  },
+  child: const Text('Ir a Login'),
+),
+const SizedBox(height: 10), // Espaciado entre el botón y el texto
+const Text(
+  'Este es un texto adicional debajo del botón de login.',
+  style: TextStyle(fontSize: 16),
+),
           ],
         ),
       ),
