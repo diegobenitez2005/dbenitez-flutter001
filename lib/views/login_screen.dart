@@ -68,7 +68,7 @@ class LoginScreen extends StatelessWidget {
 
                       // Muestra un mensaje de éxito
                       
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => WelcomeScreen(username: username)));
                       
                     } catch (e) {
                       // Maneja errores del servicio

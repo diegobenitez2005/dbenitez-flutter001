@@ -119,7 +119,6 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('You have pushed the button this many times:'),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
@@ -139,7 +138,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         : (_counter < 0 ? Colors.red : Colors.black),
               ),
             ),
-            Text("Hola soy Diego"),
             ElevatedButton(
               onPressed: () async {
                 Navigator.push(
@@ -148,12 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
               child: const Text('Ir a Login'),
-            ),
-            const SizedBox(height: 10), // Espaciado entre el botón y el texto
-            const Text(
-              'Este es un texto adicional debajo del botón de login.',
-              style: TextStyle(fontSize: 16),
-            ),
+            ), // Espaciado entre el botón y el texto
           ],
         ),
       ),

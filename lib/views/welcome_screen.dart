@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key});
+  final String username;
+
+  const WelcomeScreen({super.key, required this.username});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,7 +13,7 @@ class WelcomeScreen extends StatelessWidget {
       ),
       body: Center(
         child: Text(
-          'Bienvenido/a, el login fue exitoso',
+          'Bienvenido/a, $username!',
           style: TextStyle(fontSize: 18),
         ),
       ),
