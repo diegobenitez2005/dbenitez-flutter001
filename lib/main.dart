@@ -161,18 +161,21 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+            heroTag:  'Increment',
             onPressed: _incrementCounter,
             tooltip: 'Increment',
             child: const Icon(Icons.add),
           ),
           const SizedBox(height: 10), // Espaciado entre los botones
           FloatingActionButton(
+            heroTag: 'Decrement',
             onPressed: _decrementCounter,
             tooltip: 'Decrement',
             child: const Icon(Icons.remove),
           ),
           const SizedBox(height: 10), // Espaciado entre los botones
           FloatingActionButton(
+            heroTag: 'Reset',
             onPressed: _resetCounter,
             tooltip: 'Reset',
             child: const Icon(Icons.refresh),
