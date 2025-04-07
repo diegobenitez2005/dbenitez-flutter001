@@ -1,3 +1,5 @@
+import 'package:diego/presentation/tareas_screen.dart';
+import 'package:diego/presentation/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:diego/presentation/login_screen.dart';
 
@@ -33,7 +35,9 @@ class MyApp extends StatelessWidget {
           seedColor: const Color.fromARGB(255, 255, 77, 77),
         ),
       ),
-      home: const MyHomePage(title: 'Diego Benitez'),
+      home: const MyHomePage(
+        title: 'Diego App',
+      ),
     );
   }
 }
