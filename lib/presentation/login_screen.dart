@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:diego/api/service/auth_service.dart';
-import 'package:diego/views/welcome_screen.dart';
+import 'package:diego/presentation/welcome_screen.dart';
 
 
 class LoginScreen extends StatelessWidget {
