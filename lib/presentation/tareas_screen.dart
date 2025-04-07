@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:diego/domain/entities/task.dart';
 import 'package:diego/constants/constants.dart';
 import 'package:diego/api/service/task_service.dart';
+import 'package:diego/presentation/helpers/task_card_helper.dart';
 
 class TareasScreen extends StatefulWidget {
   const TareasScreen({super.key});
@@ -14,6 +15,8 @@ class _TareasScreenState extends State<TareasScreen> {
   final TaskService _taskService = TaskService();
   final ScrollController _scrollController = ScrollController();
   List<Task> _tareas = [];
+  int _nextTaskId = 7; // Para simular nuevas tareas
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -31,8 +34,9 @@ class _TareasScreenState extends State<TareasScreen> {
   void _scrollListener() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      // TODO: Implement pagination logic here
-      _cargarMasTareas();
+      if (!_isLoading) {
+        _cargarMasTareas();
+      }
     }
   }
 
@@ -47,34 +51,65 @@ class _TareasScreenState extends State<TareasScreen> {
     }
   }
 
-  void _cargarMasTareas() {
-    // TODO: Implement loading more tasks
+  Future<void> _cargarMasTareas() async {
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    // Simulamos carga de 5 tareas nuevas
+    await Future.delayed(const Duration(seconds: 1));
+
+    final nuevasTareas = List.generate(5, (index) {
+      return Task(
+        title: 'Tarea ${_nextTaskId + index}',
+        type: (index % 2) == 0 ? 'normal' : 'urgente',
+        descripcion: 'Descripción de tarea ${_nextTaskId + index}',
+        fecha: DateTime.now().add(Duration(days: index)),
+      );
+    });
+
+    setState(() {
+      _tareas.addAll(nuevasTareas);
+      _nextTaskId += 5;
+      _isLoading = false;
+    });
   }
 
   Future<void> _agregarTarea(Task tarea) async {
     try {
       await _taskService.createTask(tarea);
-      await _cargarTareas();
+      setState(() {
+        _tareas.add(tarea);
+      });
     } catch (e) {
       _mostrarError('Error al agregar tarea: $e');
+      await _cargarTareas(); // Recargar solo en caso de error
     }
   }
 
   Future<void> _actualizarTarea(int index, Task tarea) async {
     try {
       await _taskService.updateTask(index, tarea);
-      await _cargarTareas();
+      setState(() {
+        _tareas[index] = tarea;
+      });
     } catch (e) {
       _mostrarError('Error al actualizar tarea: $e');
+      await _cargarTareas(); // Recargar solo en caso de error
     }
   }
 
   Future<void> _eliminarTarea(int index) async {
     try {
       await _taskService.deleteTask(index);
-      await _cargarTareas();
+      setState(() {
+        _tareas.removeAt(index);
+      });
     } catch (e) {
       _mostrarError('Error al eliminar tarea: $e');
+      await _cargarTareas(); // Recargar solo en caso de error
     }
   }
 
@@ -196,6 +231,7 @@ class _TareasScreenState extends State<TareasScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: const Text(TITLE_APPBAR),
         backgroundColor: Colors.pinkAccent,
@@ -205,67 +241,24 @@ class _TareasScreenState extends State<TareasScreen> {
               ? const Center(child: Text(EMPTY_LIST))
               : ListView.builder(
                 controller: _scrollController,
-                itemCount: _tareas.length,
+                itemCount: _tareas.length + 1, // +1 para el indicador de carga
                 itemBuilder: (context, index) {
+                  if (index == _tareas.length) {
+                    return _isLoading
+                        ? const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                        : const SizedBox();
+                  }
+
                   final task = _tareas[index];
-                  return ListTile(
-                    title: Text(task.title),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(task.descripcion),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            // Fecha
-                            Text(
-                              task.fecha.toLocal().toString().split(' ')[0],
-                              style: const TextStyle(color: Colors.grey),
-                            ),
-                            const SizedBox(width: 16),
-                            // Tipo con icono
-                            Row(
-                              children: [
-                                Icon(
-                                  task.type == 'urgente'
-                                      ? Icons.warning
-                                      : Icons.task,
-                                  color:
-                                      task.type == 'urgente'
-                                          ? Colors.red
-                                          : Colors.blue,
-                                  size: 16,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'Tipo: ${task.type}',
-                                  style: TextStyle(
-                                    color:
-                                        task.type == 'urgente'
-                                            ? Colors.red
-                                            : Colors.blue,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed:
-                              () => _mostrarModalAgregarTarea(index: index),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () => _eliminarTarea(index),
-                        ),
-                      ],
-                    ),
+                  return TaskCardHelper.buildTaskCard(
+                    task,
+                    onEdit: () => _mostrarModalAgregarTarea(index: index),
+                    onDelete: () => _eliminarTarea(index),
                   );
                 },
               ),

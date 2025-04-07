@@ -16,7 +16,7 @@ class TaskRepository {
     ),
     Task(
       title: 'Tarea 3',
-      type: 'normal',
+      type: 'urgente',
       descripcion: 'Descripción de la tarea 3',
       fecha: DateTime(2024, 4, 9),
     ),
@@ -32,6 +32,14 @@ class TaskRepository {
       descripcion: 'Descripción de la tarea 5',
       fecha: DateTime(2024, 4, 11),
     ),
+    Task(
+      title: 'Tarea 6',
+      type: 'normal',
+      descripcion: 'Descripción de la tarea 6',
+      fecha: DateTime(2024, 4, 11),
+    ),
+    
+    
   ];
 
   List<Task> _tasks = List.from(initialTasks);
@@ -49,7 +57,6 @@ class TaskRepository {
   // Setters
   void addTask(Task task) {
     _tasks.add(task);
-    
   }
 
   bool updateTask(int index, Task task) {
