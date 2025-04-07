@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:diego/views/login_screen.dart';
-import 'package:diego/views/welcome_screen.dart';
+import 'package:diego/presentation/login_screen.dart';
+import 'package:diego/presentation/welcome_screen.dart';
 
 class TareasScreen extends StatefulWidget {
   const TareasScreen({super.key});

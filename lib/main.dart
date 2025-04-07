@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:diego/views/login_screen.dart';
+import 'package:diego/presentation/login_screen.dart';
 
 void main() {
   runApp(const MyApp());

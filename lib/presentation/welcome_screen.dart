@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 //import 'package:kgaona/views/tareasscreen.dart';
-import 'package:diego/views/login_screen.dart';
+import 'package:diego/presentation/login_screen.dart';
 //import 'package:diego/views/base_screen.dart';
-import 'package:diego/views/tareas_screen.dart';
+import 'package:diego/presentation/tareas_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});

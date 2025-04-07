@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:diego/views/tareas_screen.dart';
-import 'package:diego/views/login_screen.dart';
-import 'package:diego/views/welcome_screen.dart';
+import 'package:diego/presentation/tareas_screen.dart';
+import 'package:diego/presentation/login_screen.dart';
+import 'package:diego/presentation/welcome_screen.dart';
 
 class BaseScreen extends StatelessWidget {
   final Widget child; // Contenido de la pantalla
