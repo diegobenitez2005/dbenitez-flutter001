@@ -1,6 +1,8 @@
+import 'package:diego/domain/entities/task.dart';
 import 'package:flutter/material.dart';
 import 'package:diego/presentation/login_screen.dart';
 import 'package:diego/presentation/welcome_screen.dart';
+import 'package:diego/data/repositories/task_repository.dart';
 
 class TareasScreen extends StatefulWidget {
   const TareasScreen({super.key});
@@ -10,7 +12,7 @@ class TareasScreen extends StatefulWidget {
 }
 
 class _TareasScreenState extends State<TareasScreen> {
-  final List<Map<String, dynamic>> tareas = [];
+  final List<Task> tareas = TaskConstants().getTasks();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   int _selectedIndex = 0; // Índice del elemento seleccionado en el navbar
@@ -139,7 +141,7 @@ class _TareasScreenState extends State<TareasScreen> {
               },
               child: const Text('Cancelar'),
             ),
-           /* ElevatedButton(
+            /* ElevatedButton(
               onPressed: () {
                 final titulo = tituloController.text.trim();
                 final detalle = detalleController.text.trim();
@@ -157,43 +159,47 @@ class _TareasScreenState extends State<TareasScreen> {
               child: const Text('Guardar'),
             ),*/
             // prueba alerta
-              ElevatedButton(
-            onPressed: () {
-              // Validación manual
-              final titulo = tituloController.text.trim();
-              final detalle = detalleController.text.trim();
-              final fecha = fechaController.text.trim();
+            ElevatedButton(
+              onPressed: () {
+                // Validación manual
+                final titulo = tituloController.text.trim();
+                final detalle = detalleController.text.trim();
+                final fecha = fechaController.text.trim();
 
-              if (titulo.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('El título no puede estar vacío')),
-                );
-                return;
-              }
+                if (titulo.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('El título no puede estar vacío'),
+                    ),
+                  );
+                  return;
+                }
 
-              if (detalle.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('El detalle no puede estar vacío')),
-                );
-                return;
-              }
+                if (detalle.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('El detalle no puede estar vacío'),
+                    ),
+                  );
+                  return;
+                }
 
-              if (fecha.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Debe seleccionar una fecha')),
-                );
-                return;
-              }
+                if (fecha.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Debe seleccionar una fecha')),
+                  );
+                  return;
+                }
 
-              if (index == null) {
-                _agregarTarea(titulo, detalle, fechaSeleccionada!);
-              } else {
-                _editarTarea(index, titulo, detalle, fechaSeleccionada!);
-              }
-              Navigator.pop(context); // Cierra el modal y guarda la tarea
-            },
-            child: const Text('Guardar'),
-          ),
+                if (index == null) {
+                  _agregarTarea(titulo, detalle, fechaSeleccionada!);
+                } else {
+                  _editarTarea(index, titulo, detalle, fechaSeleccionada!);
+                }
+                Navigator.pop(context); // Cierra el modal y guarda la tarea
+              },
+              child: const Text('Guardar'),
+            ),
           ],
         );
       },
