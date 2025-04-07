@@ -210,14 +210,51 @@ class _TareasScreenState extends State<TareasScreen> {
                   final task = _tareas[index];
                   return ListTile(
                     title: Text(task.title),
-                    subtitle: Text(task.descripcion),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(task.descripcion),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            // Fecha
+                            Text(
+                              task.fecha.toLocal().toString().split(' ')[0],
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                            const SizedBox(width: 16),
+                            // Tipo con icono
+                            Row(
+                              children: [
+                                Icon(
+                                  task.type == 'urgente'
+                                      ? Icons.warning
+                                      : Icons.task,
+                                  color:
+                                      task.type == 'urgente'
+                                          ? Colors.red
+                                          : Colors.blue,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Tipo: ${task.type}',
+                                  style: TextStyle(
+                                    color:
+                                        task.type == 'urgente'
+                                            ? Colors.red
+                                            : Colors.blue,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          task.fecha.toLocal().toString().split(' ')[0],
-                          style: const TextStyle(color: Colors.grey),
-                        ),
                         IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed:

@@ -49,6 +49,7 @@ class TaskRepository {
   // Setters
   void addTask(Task task) {
     _tasks.add(task);
+    
   }
 
   bool updateTask(int index, Task task) {
