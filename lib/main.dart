@@ -35,9 +35,7 @@ class MyApp extends StatelessWidget {
           seedColor: const Color.fromARGB(255, 255, 77, 77),
         ),
       ),
-      home: const MyHomePage(
-        title: 'Diego App',
-      ),
+      home: const TareasScreen(), // Cambia a TareasScreen para mostrar la lista de tareas
     );
   }
 }

@@ -68,7 +68,10 @@ class _TareasScreenState extends State<TareasScreen> {
         fecha: DateTime.now().add(Duration(days: index)),
         type: index % 2 == 0 ? 'NORMAL' : 'URGENTE',
         fechaLimite: DateTime.now().add(Duration(days: index + 1)),
-        pasos: List.generate(3, (i) => 'Paso ${i + 1} de tarea ${_nextTaskId + index}'),
+        pasos: List.generate(
+          3,
+          (i) => 'Paso ${i + 1} de tarea ${_nextTaskId + index}',
+        ),
       );
     });
 
@@ -307,10 +310,11 @@ class _TareasScreenState extends State<TareasScreen> {
                   }
 
                   final task = _tareas[index];
-                  return TaskCardHelper.buildTaskCard(
+                  return construirTarjetaDeportiva(
                     task,
-                    onEdit: () => _mostrarModalAgregarTarea(index: index),
-                    onDelete: () => _eliminarTarea(index),
+                    index,
+                    onEdit: () => _mostrarModalAgregarTarea(index: index), 
+                    onDelete:() => _eliminarTarea(index) // Pasamos el índice para la imagen aleatoria
                   );
                 },
               ),
