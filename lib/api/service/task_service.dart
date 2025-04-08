@@ -54,4 +54,15 @@ class TaskService {
       throw Exception('Error deleting task: $e');
     }
   }
+  
+  List<String> obtenerPasos(String titulo) {
+    return [
+      'Paso 1: Planificar $titulo',
+      'Paso 2: Ejecutar $titulo',
+      'Paso 3: Revisar $titulo',
+    ];
+  }
 }
+
+
+

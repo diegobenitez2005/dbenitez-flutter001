@@ -44,6 +44,20 @@ class TaskRepository {
       fecha: DateTime(2024, 4, 17),
       fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 7))
     ),
+    Task(
+      title: 'Tarea 7',
+      type: 'NORMAL',
+      descripcion: 'Descripción de la tarea 6',
+      fecha: DateTime(2024, 4, 17),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 7))
+    ),
+    Task(
+      title: 'Tarea 8',
+      type: 'NORMAL',
+      descripcion: 'Descripción de la tarea 6',
+      fecha: DateTime(2024, 4, 17),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 7))
+    ),
     
     
   ];
