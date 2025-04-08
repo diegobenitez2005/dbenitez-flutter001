@@ -4,37 +4,37 @@ class TaskRepository {
   static final List<Task> initialTasks = [
     Task(
       title: 'Tarea 1',
-      type: 'urgente',
+      type: 'URGENTE',
       descripcion: 'Descripción de la tarea 1',
       fecha: DateTime(2024, 4, 7),
     ),
     Task(
       title: 'Tarea 2',
-      type: 'normal',
+      type: 'NORMAL',
       descripcion: 'Descripción de la tarea 2',
       fecha: DateTime(2024, 4, 8),
     ),
     Task(
       title: 'Tarea 3',
-      type: 'urgente',
+      type: 'URGENTE',
       descripcion: 'Descripción de la tarea 3',
       fecha: DateTime(2024, 4, 9),
     ),
     Task(
       title: 'Tarea 4',
-      type: 'normal',
+      type: 'NORMAL',
       descripcion: 'Descripción de la tarea 4',
       fecha: DateTime(2024, 4, 10),
     ),
     Task(
       title: 'Tarea 5',
-      type: 'urgente',
+      type: 'URGENTE',
       descripcion: 'Descripción de la tarea 5',
       fecha: DateTime(2024, 4, 11),
     ),
     Task(
       title: 'Tarea 6',
-      type: 'normal',
+      type: 'NORMAL',
       descripcion: 'Descripción de la tarea 6',
       fecha: DateTime(2024, 4, 11),
     ),

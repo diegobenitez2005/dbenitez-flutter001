@@ -132,58 +132,106 @@ class _TareasScreenState extends State<TareasScreen> {
       text: task?.fecha.toLocal().toString().split(' ')[0] ?? '',
     );
     DateTime? fechaSeleccionada = task?.fecha;
+    final TextEditingController tipoController = TextEditingController(
+      text: task?.type ?? '',
+    );
+    void _seleccionarFecha() async {
+      DateTime? nuevaFecha = await showDatePicker(
+        context: context,
+        initialDate: fechaSeleccionada ?? DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2100),
+      );
+      if (nuevaFecha != null) {
+        setState(() {
+          fechaSeleccionada = nuevaFecha;
+          fechaController.text = nuevaFecha.toLocal().toString().split(' ')[0];
+        });
+      }
+    }
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(index == null ? 'Agregar Tarea' : 'Editar Tarea'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: tituloController,
-                decoration: const InputDecoration(
-                  labelText: 'Título',
-                  border: OutlineInputBorder(),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: tituloController,
+                  decoration: const InputDecoration(
+                    labelText: 'Título',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: detalleController,
-                decoration: const InputDecoration(
-                  labelText: 'Detalle',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: detalleController,
+                  decoration: const InputDecoration(
+                    labelText: 'Detalle',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: fechaController,
-                readOnly: true,
-                decoration: const InputDecoration(
-                  labelText: 'Fecha',
-                  border: OutlineInputBorder(),
-                  hintText: 'Seleccionar Fecha',
+                const SizedBox(height: 16),
+                TextField(
+                  controller: fechaController,
+                  readOnly: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Fecha',
+                    border: OutlineInputBorder(),
+                    hintText: 'Seleccionar Fecha',
+                  ),
+                  onTap: () => _seleccionarFecha(),
                 ),
-                onTap: () async {
-                  DateTime? nuevaFecha = await showDatePicker(
-                    context: context,
-                    initialDate: fechaSeleccionada ?? DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
-                  );
-                  if (nuevaFecha != null) {
-                    setState(() {
-                      fechaSeleccionada = nuevaFecha;
-                      fechaController.text =
-                          nuevaFecha.toLocal().toString().split(' ')[0];
-                    });
-                  }
-                },
-              ),
-            ],
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value:
+                      tipoController.text.isEmpty ||
+                              tipoController.text.toLowerCase() == 'normal'
+                          ? 'normal'
+                          : 'urgente',
+
+                  decoration: const InputDecoration(
+                    labelText: 'Tipo de Tarea',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: const [
+                    DropdownMenuItem<String>(
+                      value: 'normal',
+                      child: Row(
+                        children: [
+                          Icon(Icons.check_circle_outline, color: Colors.blue),
+                          SizedBox(width: 8),
+                          Text('Normal'),
+                        ],
+                      ),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'urgente',
+                      child: Row(
+                        children: [
+                          Icon(Icons.warning, color: Colors.red),
+                          SizedBox(width: 8),
+                          Text('Urgente'),
+                        ],
+                      ),
+                    ),
+                  ],
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      setState(() {
+                        tipoController.text = newValue;
+                      });
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
           actions: [
+            SizedBox(height: 20.0),
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Cierra el modal sin guardar
@@ -195,6 +243,7 @@ class _TareasScreenState extends State<TareasScreen> {
                 final titulo = tituloController.text.trim();
                 final detalle = detalleController.text.trim();
                 final fecha = fechaController.text.trim();
+                final tipo = tipoController.text.toUpperCase().trim();
 
                 if (titulo.isEmpty || detalle.isEmpty || fecha.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -207,7 +256,7 @@ class _TareasScreenState extends State<TareasScreen> {
 
                 final tarea = Task(
                   title: titulo,
-                  type: detalle,
+                  type: tipo,
                   fecha: fechaSeleccionada!,
                   descripcion: detalle,
                 );
