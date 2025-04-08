@@ -54,15 +54,16 @@ class TaskService {
       throw Exception('Error deleting task: $e');
     }
   }
-  
-  List<String> obtenerPasos(String titulo) {
+
+  static List<String> obtenerPasos(String titulo, DateTime fechaLimite) {
+    final fechaStr = fechaLimite.toLocal().toString().split(' ')[0];
+
     return [
-      'Paso 1: Planificar $titulo',
-      'Paso 2: Ejecutar $titulo',
-      'Paso 3: Revisar $titulo',
+      'Paso 1: Planificar $titulo  $fechaStr',
+      'Paso 2: Ejecutar $titulo $fechaStr',
+      'Paso 3: Revisar $titulo $fechaStr',
+    
     ];
   }
 }
-
-
 

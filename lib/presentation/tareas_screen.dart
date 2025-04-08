@@ -66,7 +66,9 @@ class _TareasScreenState extends State<TareasScreen> {
         title: 'Tarea ${_nextTaskId + index}',
         descripcion: 'Descripción de tarea ${_nextTaskId + index}',
         fecha: DateTime.now().add(Duration(days: index)),
-        type: index % 2 == 0 ? 'NORMAL' : 'URGENTE'
+        type: index % 2 == 0 ? 'NORMAL' : 'URGENTE',
+        fechaLimite: DateTime.now().add(Duration(days: index + 1)),
+        pasos: List.generate(3, (i) => 'Paso ${i + 1} de tarea ${_nextTaskId + index}'),
       );
     });
 
@@ -259,6 +261,7 @@ class _TareasScreenState extends State<TareasScreen> {
                   type: tipo,
                   fecha: fechaSeleccionada!,
                   descripcion: detalle,
+                  fechaLimite: fechaSeleccionada!,
                 );
 
                 if (index == null) {

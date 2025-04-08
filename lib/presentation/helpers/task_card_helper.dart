@@ -3,6 +3,8 @@ import 'package:diego/domain/entities/task.dart';
 import 'package:diego/api/service/task_service.dart';
 
 class TaskCardHelper {
+  static const String PASOS_TITULO = 'Pasos';
+
   static Widget buildTaskCard(
     Task task, {
     required VoidCallback onEdit,
@@ -83,6 +85,25 @@ class TaskCardHelper {
                   ),
                 ],
               ),
+              if (task.pasos.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  PASOS_TITULO,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0, top: 4.0),
+                  child: Text(
+                    '• ${task.pasos[0]}',
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ),
+
+                //.toList(),
+              ],
             ],
           ),
         ),

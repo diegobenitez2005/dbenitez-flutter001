@@ -13,7 +13,6 @@ class Task {
     required this.descripcion,
     required this.fecha,
     this.pasos = LISTA_PASOS_VACIA,
-    DateTime? fechaLimite
-   
-  }):fechaLimite = fechaLimite ?? DateTime.now().add( const Duration(days:7));
+    required this.fechaLimite,
+  });
 }
