@@ -61,18 +61,18 @@ class _TareasScreenState extends State<TareasScreen> {
     // Simulamos carga de 5 tareas nuevas
     await Future.delayed(const Duration(seconds: 1));
 
-    final nuevasTareas = List.generate(5, (index) {
+    final nuevasTareas = List.generate(6, (index) {
       return Task(
         title: 'Tarea ${_nextTaskId + index}',
-        type: (index % 2) == 0 ? 'normal' : 'urgente',
         descripcion: 'Descripción de tarea ${_nextTaskId + index}',
         fecha: DateTime.now().add(Duration(days: index)),
+        type: index % 2 == 0 ? 'NORMAL' : 'URGENTE'
       );
     });
 
     setState(() {
       _tareas.addAll(nuevasTareas);
-      _nextTaskId += 5;
+      _nextTaskId += 6;
       _isLoading = false;
     });
   }
@@ -189,7 +189,7 @@ class _TareasScreenState extends State<TareasScreen> {
                 DropdownButtonFormField<String>(
                   value:
                       tipoController.text.isEmpty ||
-                              tipoController.text.toLowerCase() == 'normal'
+                              tipoController.text == 'normal'
                           ? 'normal'
                           : 'urgente',
 
