@@ -6,37 +6,43 @@ class TaskRepository {
       title: 'Tarea 1',
       type: 'URGENTE',
       descripcion: 'Descripción de la tarea 1',
-      fecha: DateTime(2024, 4, 7),
+      fecha: DateTime(2024, 4, 14),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 1)),
     ),
     Task(
       title: 'Tarea 2',
       type: 'NORMAL',
       descripcion: 'Descripción de la tarea 2',
-      fecha: DateTime(2024, 4, 8),
+      fecha: DateTime(2024, 4, 19),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 3)),
     ),
     Task(
       title: 'Tarea 3',
       type: 'URGENTE',
       descripcion: 'Descripción de la tarea 3',
-      fecha: DateTime(2024, 4, 9),
+      fecha: DateTime(2024, 4, 21),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 4))
     ),
     Task(
       title: 'Tarea 4',
       type: 'NORMAL',
       descripcion: 'Descripción de la tarea 4',
       fecha: DateTime(2024, 4, 10),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 5))
     ),
     Task(
       title: 'Tarea 5',
       type: 'URGENTE',
       descripcion: 'Descripción de la tarea 5',
-      fecha: DateTime(2024, 4, 11),
+      fecha: DateTime(2024, 4, 16),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 6))    
     ),
     Task(
       title: 'Tarea 6',
       type: 'NORMAL',
       descripcion: 'Descripción de la tarea 6',
-      fecha: DateTime(2024, 4, 11),
+      fecha: DateTime(2024, 4, 17),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 7))
     ),
     
     
