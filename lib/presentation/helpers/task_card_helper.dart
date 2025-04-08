@@ -65,15 +65,15 @@ class TaskCardHelper {
               Row(
                 children: [
                   Icon(
-                    task.type == 'urgente' ? Icons.warning : Icons.task,
-                    color: task.type == 'urgente' ? Colors.red : Colors.blue,
+                    task.type == 'URGENTE' ? Icons.warning : Icons.task,
+                    color: task.type == 'URGENTE' ? Colors.red : Colors.blue,
                     size: 16,
                   ),
                   const SizedBox(width: 4),
                   Text(
                     'Tipo: ${task.type}',
                     style: TextStyle(
-                      color: task.type == 'urgente' ? Colors.red : Colors.blue,
+                      color: task.type == 'URGENTE' ? Colors.red : Colors.blue,
                     ),
                   ),
                   const SizedBox(width: 16),
