@@ -1,4 +1,6 @@
 import 'package:diego/domain/entities/task.dart';
+import 'package:diego/api/service/task_service.dart';
+final TaskService _taskService = TaskService();
 
 class TaskRepository {
   static final List<Task> initialTasks = [
@@ -6,40 +8,59 @@ class TaskRepository {
       title: 'Tarea 1',
       type: 'URGENTE',
       descripcion: 'Descripción de la tarea 1',
-      fecha: DateTime(2024, 4, 7),
+      fecha: DateTime(2024, 4, 14),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 1)),
+      
     ),
     Task(
       title: 'Tarea 2',
       type: 'NORMAL',
       descripcion: 'Descripción de la tarea 2',
-      fecha: DateTime(2024, 4, 8),
+      fecha: DateTime(2024, 4, 19),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 3)),
     ),
     Task(
       title: 'Tarea 3',
       type: 'URGENTE',
       descripcion: 'Descripción de la tarea 3',
-      fecha: DateTime(2024, 4, 9),
+      fecha: DateTime(2024, 4, 21),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 4)),
     ),
     Task(
       title: 'Tarea 4',
       type: 'NORMAL',
       descripcion: 'Descripción de la tarea 4',
       fecha: DateTime(2024, 4, 10),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 5)),
     ),
     Task(
       title: 'Tarea 5',
       type: 'URGENTE',
       descripcion: 'Descripción de la tarea 5',
-      fecha: DateTime(2024, 4, 11),
+      fecha: DateTime(2024, 4, 16),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 6)),
     ),
     Task(
       title: 'Tarea 6',
       type: 'NORMAL',
       descripcion: 'Descripción de la tarea 6',
-      fecha: DateTime(2024, 4, 11),
+      fecha: DateTime(2024, 4, 17),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 7)),
     ),
-    
-    
+    Task(
+      title: 'Tarea 7',
+      type: 'NORMAL',
+      descripcion: 'Descripción de la tarea 6',
+      fecha: DateTime(2024, 4, 17),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 7)),
+    ),
+    Task(
+      title: 'Tarea 8',
+      type: 'NORMAL',
+      descripcion: 'Descripción de la tarea 6',
+      fecha: DateTime(2024, 4, 17),
+      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 7)),
+    ),
   ];
 
   List<Task> _tasks = List.from(initialTasks);
@@ -56,10 +77,25 @@ class TaskRepository {
 
   // Setters
   void addTask(Task task) {
-    _tasks.add(task);
+    // Obtener pasos usando la función existente
+    //final List<String> pasos = _taskService.obtenerPasos(task.title, task.fechaLimite);
+
+    // Crear nueva tarea con los pasos
+    final nuevaTarea = Task(
+      title: task.title,
+      type: task.type,
+      descripcion: task.descripcion,
+      fecha: task.fecha, // Usar los pasos generados
+      fechaLimite: task.fechaLimite,
+      pasos: task.pasos,
+    );
+
+    _tasks.add(nuevaTarea);
   }
 
   bool updateTask(int index, Task task) {
+    //final List<String> pasos = _taskService.obtenerPasos(task.title, task.fechaLimite);
+
     if (index >= 0 && index < _tasks.length) {
       _tasks[index] = task;
       return true;
@@ -78,4 +114,6 @@ class TaskRepository {
   void resetTasks() {
     _tasks = List.from(initialTasks);
   }
+
+  
 }

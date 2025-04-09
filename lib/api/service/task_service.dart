@@ -1,5 +1,6 @@
 import 'package:diego/domain/entities/task.dart';
 import 'package:diego/data/repositories/task_repository.dart';
+import 'package:diego/data/repositories/assistant_repository.dart';
 
 class TaskService {
   // Singleton pattern
@@ -9,6 +10,7 @@ class TaskService {
 
   // Repository instance
   final TaskRepository _repository = TaskRepository();
+  final AssistantRepository _assistantRepository = AssistantRepository();
 
   // Create
   Future<Task> createTask(Task task) async {
@@ -22,11 +24,19 @@ class TaskService {
 
   // Read
   Future<List<Task>> getTasks() async {
+    List<Task> listaTareas = _repository.getTasks();
     try {
-      return _repository.getTasks();
+      for (int i = 0; i < listaTareas.length; i++) {
+        listaTareas[i].pasos = obtenerPasos(
+          listaTareas[i].title,
+          listaTareas[i].fechaLimite,
+        );
+      }
     } catch (e) {
+      listaTareas = [];
       throw Exception('Error getting tasks: $e');
     }
+    return listaTareas;
   }
 
   Future<Task?> getTaskById(int index) async {
@@ -53,5 +63,28 @@ class TaskService {
     } catch (e) {
       throw Exception('Error deleting task: $e');
     }
+  }
+
+  List<String> obtenerPasos(String titulo, DateTime fechaLimite) {
+    {
+      //var titulo = 'Tarea 1';
+      //var fechaLimite = DateTime(2024, 4, 8).add(const Duration(days: 1));
+      try {
+        return _assistantRepository.obtenerPasos(titulo, fechaLimite);
+      } catch (e) {
+        throw Exception('Error getting steps: $e');
+      }
+    }
+
+    //   static List<String> obtenerPasos(String titulo, DateTime fechaLimite) {
+    //     final fechaStr = fechaLimite.toLocal().toString().split(' ')[0];
+
+    //     return [
+    //       'Paso 1: Planificar $titulo antes de $fechaStr',
+    //       'Paso 2: Ejecutar $titulo antes de $fechaStr',
+    //       'Paso 3: Revisar $titulo antes de $fechaStr',
+
+    //     ];
+    //   }
   }
 }

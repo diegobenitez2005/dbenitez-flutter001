@@ -3,6 +3,8 @@ import 'package:diego/domain/entities/task.dart';
 import 'package:diego/constants/constants.dart';
 import 'package:diego/api/service/task_service.dart';
 import 'package:diego/presentation/helpers/task_card_helper.dart';
+import 'package:diego/presentation/helpers/deportiva_helper.dart';
+import 'package:diego/presentation/deportiva_card.dart';
 
 class TareasScreen extends StatefulWidget {
   const TareasScreen({super.key});
@@ -66,7 +68,12 @@ class _TareasScreenState extends State<TareasScreen> {
         title: 'Tarea ${_nextTaskId + index}',
         descripcion: 'Descripción de tarea ${_nextTaskId + index}',
         fecha: DateTime.now().add(Duration(days: index)),
-        type: index % 2 == 0 ? 'NORMAL' : 'URGENTE'
+        type: index % 2 == 0 ? 'NORMAL' : 'URGENTE',
+        fechaLimite: DateTime.now().add(Duration(days: index + 1)),
+        pasos: List.generate(
+          3,
+          (i) => 'Paso ${i + 1} de tarea ${_nextTaskId + index}',
+        ),
       );
     });
 
@@ -131,10 +138,14 @@ class _TareasScreenState extends State<TareasScreen> {
     final TextEditingController fechaController = TextEditingController(
       text: task?.fecha.toLocal().toString().split(' ')[0] ?? '',
     );
+    final TextEditingController pasosController = TextEditingController(
+      text: task?.pasos.join(', ') ?? '', // Convertir lista de pasos a texto
+    );
     DateTime? fechaSeleccionada = task?.fecha;
     final TextEditingController tipoController = TextEditingController(
       text: task?.type ?? '',
     );
+
     void _seleccionarFecha() async {
       DateTime? nuevaFecha = await showDatePicker(
         context: context,
@@ -186,13 +197,20 @@ class _TareasScreenState extends State<TareasScreen> {
                   onTap: () => _seleccionarFecha(),
                 ),
                 const SizedBox(height: 16),
+                // TextField(
+                //   controller: pasosController,
+                //   decoration: const InputDecoration(
+                //     labelText: 'Pasos (separados por comas)',
+                //     border: OutlineInputBorder(),
+                //   ),
+                // ),
+                const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value:
                       tipoController.text.isEmpty ||
                               tipoController.text == 'normal'
                           ? 'normal'
                           : 'urgente',
-
                   decoration: const InputDecoration(
                     labelText: 'Tipo de Tarea',
                     border: OutlineInputBorder(),
@@ -244,6 +262,7 @@ class _TareasScreenState extends State<TareasScreen> {
                 final detalle = detalleController.text.trim();
                 final fecha = fechaController.text.trim();
                 final tipo = tipoController.text.toUpperCase().trim();
+                final pasos = pasosController.text;
 
                 if (titulo.isEmpty || detalle.isEmpty || fecha.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -259,6 +278,11 @@ class _TareasScreenState extends State<TareasScreen> {
                   type: tipo,
                   fecha: fechaSeleccionada!,
                   descripcion: detalle,
+                  fechaLimite: fechaSeleccionada!,
+                  pasos: _taskService.obtenerPasos(
+                    tituloController.text,
+                    DateTime.now().add(const Duration(days: 1)),
+                  ), // Mantener los pasos
                 );
 
                 if (index == null) {
@@ -304,10 +328,26 @@ class _TareasScreenState extends State<TareasScreen> {
                   }
 
                   final task = _tareas[index];
-                  return TaskCardHelper.buildTaskCard(
-                    task,
-                    onEdit: () => _mostrarModalAgregarTarea(index: index),
-                    onDelete: () => _eliminarTarea(index),
+
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => DetalleTarjetaScreen(
+                                task: task,
+                                index: index,
+                                tasks: _tareas, // Pass the required 'tasks' parameter
+                              ),
+                        ),
+                      );
+                    },
+                    child: TaskCardHelper.buildTaskCard(
+                      task,
+                      onEdit: () => _mostrarModalAgregarTarea(index: index),
+                      onDelete: () => _eliminarTarea(index),
+                    ),
                   );
                 },
               ),
