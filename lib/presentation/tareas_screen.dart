@@ -438,6 +438,7 @@ class _TareasScreenState extends State<TareasScreen> {
                       task,
                       onEdit: () => _mostrarModalAgregarTarea(index: index),
                       onDelete: () => _eliminarTarea(index),
+                      context: context,
                     ),
                   );
                 },

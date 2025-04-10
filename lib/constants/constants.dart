@@ -6,3 +6,4 @@ const List<String> LISTA_PASOS_VACIA = [];
 const PASOS_TITULO = 'Pasos para completar';
 const FECHA_LIMITE = 'Fecha límite: ';
 const LIMITADOR_TAREAS = 2;
+const TAREA_ELIMINADA = 'Tarea eliminada';
