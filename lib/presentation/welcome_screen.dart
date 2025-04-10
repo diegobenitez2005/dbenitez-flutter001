@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-//import 'package:kgaona/views/tareasscreen.dart';
+import 'package:diego/presentation/contador_screen.dart';
 import 'package:diego/presentation/login_screen.dart';
-//import 'package:diego/views/base_screen.dart';
+import 'package:diego/presentation/base_screen.dart';
 import 'package:diego/presentation/tareas_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -71,7 +70,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       case 0: // Inicio
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+          MaterialPageRoute(builder: (context) => const ContadorScreen()),
         );
         break;
       case 1: // Añadir Tarea
@@ -93,7 +92,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Bienvenido')),
+      appBar: AppBar(title: const Text('Bienvenido'),
+      backgroundColor: Colors.pinkAccent,),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -122,6 +122,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => TareasScreen()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.tag_faces_sharp),
+              title: Text('Contador'),
+              onTap: () {
+                // Acción para la configuración
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ContadorScreen()),
                 );
               },
             ),
@@ -215,10 +226,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.pinkAccent,
         currentIndex: _selectedIndex, // Índice del elemento seleccionado
         onTap: _onItemTapped, // Maneja el evento de selección
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Inicio"),
+          BottomNavigationBarItem(icon: Icon(Icons.tag_faces), label: "Contador"),
           BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Añadir Tarea'),
           BottomNavigationBarItem(icon: Icon(Icons.close), label: "Salir"),
         ],

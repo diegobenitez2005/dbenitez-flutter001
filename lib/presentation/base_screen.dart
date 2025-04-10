@@ -1,3 +1,4 @@
+import 'package:diego/presentation/contador_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:diego/presentation/tareas_screen.dart';
 import 'package:diego/presentation/login_screen.dart';
@@ -21,7 +22,7 @@ class BaseScreen extends StatelessWidget {
               decoration: BoxDecoration(color: Colors.pinkAccent),
               child: Text(
                 'Menú de Navegación',
-                style: TextStyle(color: Colors.white, fontSize: 24),
+                style: TextStyle(color: Colors.white, fontSize: 18),
               ),
             ),
             ListTile(
@@ -41,6 +42,17 @@ class BaseScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => TareasScreen()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.tag_faces_sharp),
+              title: Text('Contador'),
+              onTap: () {
+                // Acción para la configuración
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ContadorScreen()),
                 );
               },
             ),
@@ -81,6 +93,7 @@ class BaseScreen extends StatelessWidget {
                 );
               },
             ),
+          
           ],
         ),
       ),
