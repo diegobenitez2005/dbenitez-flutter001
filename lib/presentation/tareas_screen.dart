@@ -5,6 +5,9 @@ import 'package:diego/api/service/task_service.dart';
 import 'package:diego/presentation/helpers/task_card_helper.dart';
 import 'package:diego/presentation/helpers/deportiva_helper.dart';
 import 'package:diego/presentation/deportiva_card.dart';
+import 'package:diego/presentation/login_screen.dart';
+import 'package:diego/presentation/welcome_screen.dart';
+import 'package:diego/presentation/contador_screen.dart';
 
 class TareasScreen extends StatefulWidget {
   const TareasScreen({super.key});
@@ -309,6 +312,88 @@ class _TareasScreenState extends State<TareasScreen> {
         title: const Text(TITLE_APPBAR),
         backgroundColor: Colors.pinkAccent,
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.pinkAccent),
+              child: Text(
+                'Menú de Navegación',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text('Inicio'),
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.task),
+              title: Text('Tareas'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TareasScreen()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.tag_faces_sharp),
+              title: Text('Contador'),
+              onTap: () {
+                // Acción para la configuración
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ContadorScreen()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.exit_to_app),
+              title: Text('Cerrar Sesión'),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('Confirmar'),
+                      content: Text(
+                        '¿Estás seguro de que deseas cerrar sesión?',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Cierra el diálogo
+                          },
+                          child: Text('Cancelar'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Cierra el diálogo
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginScreen(),
+                              ),
+                            );
+                          },
+                          child: Text('Cerrar Sesión'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+      ),
       body:
           _tareas.isEmpty
               ? const Center(child: Text(EMPTY_LIST))
@@ -338,7 +423,8 @@ class _TareasScreenState extends State<TareasScreen> {
                               (context) => DetalleTarjetaScreen(
                                 task: task,
                                 index: index,
-                                tasks: _tareas, // Pass the required 'tasks' parameter
+                                tasks:
+                                    _tareas, // Pass the required 'tasks' parameter
                               ),
                         ),
                       );
