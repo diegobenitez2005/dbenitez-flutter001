@@ -95,18 +95,17 @@ class TarjetaDeportiva extends StatelessWidget {
         children: [
           // Sección de imagen con bordes redondeados en la parte superior
           SizedBox(height: 20),
-          Padding(padding: const EdgeInsets.all(20.0),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
             child: ClipRRect(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(10.0),
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+              child: Image.network(
+                'https://picsum.photos/200/300?random=$index',
+                width: 300,
+                height: 300,
+                fit: BoxFit.cover, // Asegura que la imagen cubra el contenedor
               ),
-                child: Image.network(
-                  'https://picsum.photos/200/300?random=$index',
-                  width: 300,
-                  height:300,
-                  fit: BoxFit.cover, // Asegura que la imagen cubra el contenedor
-                ),
-              ),
+            ),
           ),
           // Sección de contenido
           Padding(
@@ -142,8 +141,9 @@ class TarjetaDeportiva extends StatelessWidget {
                         (paso) => Text(
                           '$paso',
                           style: const TextStyle(
-                          fontSize: 14,
-                          fontFamily: 'Roboto',),
+                            fontSize: 14,
+                            fontFamily: 'Roboto',
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -153,7 +153,7 @@ class TarjetaDeportiva extends StatelessWidget {
 
                 // Fecha límite
                 Text(
-                  'Fecha límite: ${task.fechaLimite.toLocal().toString().split(' ')[0]}',
+                  'Fecha límite: ${task.deadline.toLocal().toString().split(' ')[0]}',
                   style: const TextStyle(
                     color: Colors.lightBlueAccent,
                     fontSize: 20,

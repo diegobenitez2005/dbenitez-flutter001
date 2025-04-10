@@ -1,5 +1,6 @@
 import 'package:diego/domain/entities/task.dart';
 import 'package:diego/api/service/task_service.dart';
+
 final TaskService _taskService = TaskService();
 
 class TaskRepository {
@@ -8,58 +9,57 @@ class TaskRepository {
       title: 'Tarea 1',
       type: 'URGENTE',
       descripcion: 'Descripción de la tarea 1',
-      fecha: DateTime(2024, 4, 14),
-      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 1)),
-      
+      fecha: DateTime(2024, 4, 10),
+      deadline: DateTime(2024, 4, 10).add(const Duration(days: 1)),
     ),
     Task(
       title: 'Tarea 2',
       type: 'NORMAL',
       descripcion: 'Descripción de la tarea 2',
-      fecha: DateTime(2024, 4, 19),
-      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 3)),
+      fecha: DateTime(2024, 4, 11),
+      deadline: DateTime(2024, 4, 10).add(const Duration(days: 3)),
     ),
     Task(
       title: 'Tarea 3',
       type: 'URGENTE',
       descripcion: 'Descripción de la tarea 3',
-      fecha: DateTime(2024, 4, 21),
-      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 4)),
+      fecha: DateTime(2024, 4, 12),
+      deadline: DateTime(2024, 4, 10).add(const Duration(days: 4)),
     ),
     Task(
       title: 'Tarea 4',
       type: 'NORMAL',
       descripcion: 'Descripción de la tarea 4',
-      fecha: DateTime(2024, 4, 10),
-      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 5)),
+      fecha: DateTime(2024, 4, 13),
+      deadline: DateTime(2024, 4, 10).add(const Duration(days: 5)),
     ),
     Task(
       title: 'Tarea 5',
       type: 'URGENTE',
       descripcion: 'Descripción de la tarea 5',
-      fecha: DateTime(2024, 4, 16),
-      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 6)),
+      fecha: DateTime(2024, 4, 14),
+      deadline: DateTime(2024, 4, 10).add(const Duration(days: 6)),
     ),
     Task(
       title: 'Tarea 6',
       type: 'NORMAL',
       descripcion: 'Descripción de la tarea 6',
-      fecha: DateTime(2024, 4, 17),
-      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 7)),
+      fecha: DateTime(2024, 4, 15),
+      deadline: DateTime(2024, 4, 10).add(const Duration(days: 7)),
     ),
     Task(
       title: 'Tarea 7',
       type: 'NORMAL',
       descripcion: 'Descripción de la tarea 6',
-      fecha: DateTime(2024, 4, 17),
-      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 7)),
+      fecha: DateTime(2024, 4, 16),
+      deadline: DateTime(2024, 4, 10).add(const Duration(days: 7)),
     ),
     Task(
       title: 'Tarea 8',
       type: 'NORMAL',
       descripcion: 'Descripción de la tarea 6',
       fecha: DateTime(2024, 4, 17),
-      fechaLimite: DateTime(2024, 4, 8).add(const Duration(days: 7)),
+      deadline: DateTime(2024, 4, 10).add(const Duration(days: 8)),
     ),
   ];
 
@@ -86,7 +86,7 @@ class TaskRepository {
       type: task.type,
       descripcion: task.descripcion,
       fecha: task.fecha, // Usar los pasos generados
-      fechaLimite: task.fechaLimite,
+      deadline: task.deadline,
       pasos: task.pasos,
     );
 
@@ -114,6 +114,4 @@ class TaskRepository {
   void resetTasks() {
     _tasks = List.from(initialTasks);
   }
-
-  
 }

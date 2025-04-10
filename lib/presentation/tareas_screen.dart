@@ -47,7 +47,7 @@ class _TareasScreenState extends State<TareasScreen> {
 
   Future<void> _cargarTareas() async {
     try {
-      final tareas = await _taskService.getTasks();
+      final tareas = await _taskService.getTasksWithSteps();
       setState(() {
         _tareas = tareas;
       });
@@ -63,21 +63,26 @@ class _TareasScreenState extends State<TareasScreen> {
       _isLoading = true;
     });
 
-    // Simulamos carga de 5 tareas nuevas
+    // Simulamos carga de 6 tareas nuevas
     await Future.delayed(const Duration(seconds: 1));
 
     final nuevasTareas = List.generate(6, (index) {
-      return Task(
+      final nuevaTarea = Task(
         title: 'Tarea ${_nextTaskId + index}',
         descripcion: 'Descripción de tarea ${_nextTaskId + index}',
         fecha: DateTime.now().add(Duration(days: index)),
         type: index % 2 == 0 ? 'NORMAL' : 'URGENTE',
-        fechaLimite: DateTime.now().add(Duration(days: index + 1)),
-        pasos: List.generate(
-          3,
-          (i) => 'Paso ${i + 1} de tarea ${_nextTaskId + index}',
-        ),
+        deadline: DateTime.now().add(Duration(days: index + 1)),
+        pasos: [], // Inicialmente vacío
       );
+
+      // Generar pasos para la nueva tarea
+      nuevaTarea.pasos = _taskService.obtenerPasos(
+        nuevaTarea.title,
+        nuevaTarea.deadline,
+      );
+
+      return nuevaTarea;
     });
 
     setState(() {
@@ -281,7 +286,7 @@ class _TareasScreenState extends State<TareasScreen> {
                   type: tipo,
                   fecha: fechaSeleccionada!,
                   descripcion: detalle,
-                  fechaLimite: fechaSeleccionada!,
+                  deadline: fechaSeleccionada!,
                   pasos: _taskService.obtenerPasos(
                     tituloController.text,
                     DateTime.now().add(const Duration(days: 1)),
@@ -309,7 +314,7 @@ class _TareasScreenState extends State<TareasScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: const Text(TITLE_APPBAR),
+        title: const Text(TITULO_APPBAR),
         backgroundColor: Colors.pinkAccent,
       ),
       drawer: Drawer(
@@ -396,7 +401,7 @@ class _TareasScreenState extends State<TareasScreen> {
       ),
       body:
           _tareas.isEmpty
-              ? const Center(child: Text(EMPTY_LIST))
+              ? const Center(child: Text(LISTA_VACIA))
               : ListView.builder(
                 controller: _scrollController,
                 itemCount: _tareas.length + 1, // +1 para el indicador de carga
