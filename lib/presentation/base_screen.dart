@@ -57,6 +57,17 @@ class BaseScreen extends StatelessWidget {
               },
             ),
             ListTile(
+              leading: Icon(Icons.tag_faces_sharp),
+              title: Text('Contador'),
+              onTap: () {
+                // Acción para la configuración
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ContadorScreen()),
+                );
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text('Cerrar Sesión'),
               onTap: () {
@@ -97,7 +108,11 @@ class BaseScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: child, // Contenido de la pantalla
     );
   }
 }
+
+
+
+
+

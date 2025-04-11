@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:diego/presentation/contador_screen.dart';
 import 'package:diego/presentation/login_screen.dart';
-import 'package:diego/presentation/base_screen.dart';
 import 'package:diego/presentation/tareas_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -207,7 +206,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             if (isLoading)
               const CircularProgressIndicator()
             else
-              ...quotes.map((quote) => Text(quote)).toList(),
+              ...quotes.map((quote) => Text(quote)),
             ElevatedButton(
               onPressed: _mostrarCotizaciones,
               child: Text("Cotizaciones"),
