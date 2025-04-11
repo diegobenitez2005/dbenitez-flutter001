@@ -26,7 +26,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         'Cotización 1: 100',
         'Cotización 2: 200',
         'Cotización 3: 300',
-        'Cotización 4: 400',
+        'Cotización 4: 4000',
       ];
       isLoading = false;
     });
