@@ -49,8 +49,6 @@ class _TareasScreenState extends State<TareasScreen> {
 
   Future<void> _cargarTareas() async {
     try {
-
-      
       final tareas = await _taskService.getTasksWithSteps();
       setState(() {
         _tareas = tareas;
@@ -93,10 +91,8 @@ class _TareasScreenState extends State<TareasScreen> {
     setState(() {
       _tareas.addAll(nuevasTareas);
       _nextTaskId += 6;
-      _isLoading = false;
-    });
-    setState(() {
       taskCounter = _tareas.length;
+      _isLoading = false;
     });
   }
 
@@ -105,6 +101,7 @@ class _TareasScreenState extends State<TareasScreen> {
       await _taskService.createTask(tarea);
       setState(() {
         _tareas.add(tarea);
+        taskCounter = _tareas.length;
       });
     } catch (e) {
       _mostrarError('Error al agregar tarea: $e');
@@ -214,14 +211,6 @@ class _TareasScreenState extends State<TareasScreen> {
                   onTap: () => _seleccionarFecha(),
                 ),
                 const SizedBox(height: 16),
-                // TextField(
-                //   controller: pasosController,
-                //   decoration: const InputDecoration(
-                //     labelText: 'Pasos (separados por comas)',
-                //     border: OutlineInputBorder(),
-                //   ),
-                // ),
-                const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value:
                       tipoController.text.isEmpty ||
@@ -266,7 +255,6 @@ class _TareasScreenState extends State<TareasScreen> {
             ),
           ),
           actions: [
-            SizedBox(height: 20.0),
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Cierra el modal sin guardar
@@ -279,7 +267,6 @@ class _TareasScreenState extends State<TareasScreen> {
                 final detalle = detalleController.text.trim();
                 final fecha = fechaController.text.trim();
                 final tipo = tipoController.text.toUpperCase().trim();
-                final pasos = pasosController.text;
 
                 if (titulo.isEmpty || detalle.isEmpty || fecha.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -299,7 +286,7 @@ class _TareasScreenState extends State<TareasScreen> {
                   pasos: _taskService.obtenerPasos(
                     tituloController.text,
                     DateTime.now().add(const Duration(days: 1)),
-                  ), // Mantener los pasos
+                  ),
                 );
 
                 if (index == null) {
@@ -324,8 +311,7 @@ class _TareasScreenState extends State<TareasScreen> {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: CommonWidgetsHelper.buildBoldTitle(
-          'Lista de Tareas\nTareas ($taskCounter)', // 'Tareas ($taskCounter)' (Contador de tareas en el título de la AppBar)',
-          // Título de la AppBar)',
+          'Lista de Tareas\nTareas ($taskCounter)',
         ),
         backgroundColor: Colors.pinkAccent,
       ),
@@ -360,8 +346,7 @@ class _TareasScreenState extends State<TareasScreen> {
                           builder:
                               (context) => DetalleTarjetaScreen(
                                 initialIndex: index,
-                                tasks:
-                                    _tareas, // Pass the required 'tasks' parameter
+                                tasks: _tareas,
                               ),
                         ),
                       );
