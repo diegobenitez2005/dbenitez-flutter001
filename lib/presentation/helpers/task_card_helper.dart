@@ -24,10 +24,13 @@ class TaskCardHelper {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '$TAREA_ELIMINADA',
-              
-              style: TextStyle(color: Colors.amber[50], fontFamily: 'Roboto',
-              fontSize: 16),
+              '$tareaEliminada',
+
+              style: TextStyle(
+                color: Colors.amber[50],
+                fontFamily: 'Roboto',
+                fontSize: 16,
+              ),
             ),
             backgroundColor: Colors.pink[900],
             duration: const Duration(seconds: 1),

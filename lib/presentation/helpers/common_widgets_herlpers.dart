@@ -1,3 +1,4 @@
+import 'package:diego/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class CommonWidgetsHelper {
@@ -27,8 +28,8 @@ class CommonWidgetsHelper {
   /// Construye un pie de página en negrita.
   static Widget buildBoldFooter(String footer) {
     return Text(
-      footer,
-      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      '$fechaLimite $footer',
+      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     );
   }
 

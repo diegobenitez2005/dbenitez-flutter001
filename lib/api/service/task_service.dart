@@ -67,24 +67,12 @@ class TaskService {
 
   List<String> obtenerPasos(String titulo, DateTime fechaLimite) {
     {
-      //var titulo = 'Tarea 1';
-      //var fechaLimite = DateTime(2024, 4, 8).add(const Duration(days: 1));
-      
-        var lista = _assistantRepository.obtenerPasos(titulo, fechaLimite).take(2).toList();
-      
-        return lista;
-      
+      var lista =
+          _assistantRepository
+              .obtenerPasos(titulo, fechaLimite)
+              .take(2)
+              .toList();
+      return lista;
     }
-
-    //   static List<String> obtenerPasos(String titulo, DateTime fechaLimite) {
-    //     final fechaStr = fechaLimite.toLocal().toString().split(' ')[0];
-
-    //     return [
-    //       'Paso 1: Planificar $titulo antes de $fechaStr',
-    //       'Paso 2: Ejecutar $titulo antes de $fechaStr',
-    //       'Paso 3: Revisar $titulo antes de $fechaStr',
-
-    //     ];
-    //   }
   }
 }
