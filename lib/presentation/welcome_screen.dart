@@ -33,30 +33,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     });
   }
 
-  void _mostrarCotizaciones() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Cotizaciones'),
-          content: SingleChildScrollView(
-            child: Column(
-              children:
-                  quotes.map((quote) => ListTile(title: Text(quote))).toList(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cerrar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  
 
   int _selectedIndex = 0;
 
