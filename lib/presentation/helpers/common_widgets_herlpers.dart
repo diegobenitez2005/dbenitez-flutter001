@@ -38,6 +38,7 @@ class CommonWidgetsHelper {
     return Text(
       '$fechaLimite $footer',
       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      
     );
   }
 

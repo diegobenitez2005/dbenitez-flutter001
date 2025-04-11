@@ -5,10 +5,7 @@ import 'package:diego/constants/constants.dart';
 import 'package:diego/api/service/task_service.dart';
 import 'package:diego/presentation/helpers/task_card_helper.dart';
 import 'package:diego/presentation/deportiva_screen.dart';
-import 'package:diego/presentation/helpers/helper_constructor_deportiva.dart.dart';
-import 'package:diego/presentation/login_screen.dart';
-import 'package:diego/presentation/welcome_screen.dart';
-import 'package:diego/presentation/contador_screen.dart';
+
 
 class TareasScreen extends StatefulWidget {
   const TareasScreen({super.key});
@@ -24,6 +21,7 @@ class _TareasScreenState extends State<TareasScreen> {
   int _nextTaskId = 7; // Para simular nuevas tareas
   bool _isLoading = false;
   int taskCounter = 0;
+  
 
   @override
   void initState() {
@@ -54,6 +52,7 @@ class _TareasScreenState extends State<TareasScreen> {
       final tareas = await _taskService.getTasksWithSteps();
       setState(() {
         _tareas = tareas;
+        taskCounter = _tareas.length;
         taskCounter = _tareas.length;
       });
     } catch (e) {
@@ -94,6 +93,9 @@ class _TareasScreenState extends State<TareasScreen> {
       _tareas.addAll(nuevasTareas);
       _nextTaskId += 6;
       _isLoading = false;
+    });
+    setState(() {
+      taskCounter = _tareas.length;
     });
     setState(() {
       taskCounter = _tareas.length;
@@ -348,6 +350,7 @@ class _TareasScreenState extends State<TareasScreen> {
                         : const SizedBox(
                           height: 8.0,
                         ); // Espacio vacío si no se está cargando más
+                         // Espacio vacío si no se está cargando más
                   }
 
                   final task = _tareas[index];
