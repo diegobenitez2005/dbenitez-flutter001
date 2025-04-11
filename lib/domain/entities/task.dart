@@ -6,13 +6,13 @@ class Task {
   final String descripcion;
   List<String> pasos;
   DateTime fecha;
-  DateTime fechaLimite;
+  DateTime deadline;
   Task({
     required this.title,
-    this.type = TASK_TYPE_NORMAL,
+    this.type = taskTypeNormal,
     required this.descripcion,
     required this.fecha,
-    this.pasos = LISTA_PASOS_VACIA,
-    required this.fechaLimite,
+    this.pasos = listaPasosVacia,
+    required this.deadline,
   });
 }

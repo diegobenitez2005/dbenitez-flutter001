@@ -23,13 +23,13 @@ class TaskService {
   }
 
   // Read
-  Future<List<Task>> getTasks() async {
+  Future<List<Task>> getTasksWithSteps() async {
     List<Task> listaTareas = _repository.getTasks();
     try {
       for (int i = 0; i < listaTareas.length; i++) {
         listaTareas[i].pasos = obtenerPasos(
           listaTareas[i].title,
-          listaTareas[i].fechaLimite,
+          listaTareas[i].deadline,
         );
       }
     } catch (e) {
@@ -67,24 +67,12 @@ class TaskService {
 
   List<String> obtenerPasos(String titulo, DateTime fechaLimite) {
     {
-      //var titulo = 'Tarea 1';
-      //var fechaLimite = DateTime(2024, 4, 8).add(const Duration(days: 1));
-      try {
-        return _assistantRepository.obtenerPasos(titulo, fechaLimite);
-      } catch (e) {
-        throw Exception('Error getting steps: $e');
-      }
+      var lista =
+          _assistantRepository
+              .obtenerPasos(titulo, fechaLimite)
+              .take(2)
+              .toList();
+      return lista;
     }
-
-    //   static List<String> obtenerPasos(String titulo, DateTime fechaLimite) {
-    //     final fechaStr = fechaLimite.toLocal().toString().split(' ')[0];
-
-    //     return [
-    //       'Paso 1: Planificar $titulo antes de $fechaStr',
-    //       'Paso 2: Ejecutar $titulo antes de $fechaStr',
-    //       'Paso 3: Revisar $titulo antes de $fechaStr',
-
-    //     ];
-    //   }
   }
 }

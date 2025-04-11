@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:diego/domain/entities/task.dart';
-import 'package:diego/api/service/task_service.dart';
+import 'package:diego/constants/constants.dart';
 
 class TaskCardHelper {
   static const String PASOS_TITULO = 'Pasos';
@@ -9,6 +9,7 @@ class TaskCardHelper {
     Task task, {
     required VoidCallback onEdit,
     required VoidCallback onDelete,
+    required BuildContext context,
   }) {
     return Dismissible(
       key: Key(task.title),
@@ -20,10 +21,23 @@ class TaskCardHelper {
       direction: DismissDirection.startToEnd,
       onDismissed: (rigth) {
         onDelete();
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text("${task.title} eliminada")),
-        // );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '$tareaEliminada',
+
+              style: TextStyle(
+                color: Colors.amber[50],
+                fontFamily: 'Roboto',
+                fontSize: 16,
+              ),
+            ),
+            backgroundColor: Colors.pink[900],
+            duration: const Duration(seconds: 1),
+          ),
+        );
       },
+
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -111,4 +125,3 @@ class TaskCardHelper {
     );
   }
 }
- 

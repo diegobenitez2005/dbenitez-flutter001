@@ -3,8 +3,8 @@ import 'package:diego/domain/entities/task.dart';
 import 'package:diego/constants/constants.dart';
 import 'package:diego/api/service/task_service.dart';
 import 'package:diego/presentation/helpers/task_card_helper.dart';
-import 'package:diego/presentation/helpers/deportiva_helper.dart';
-import 'package:diego/presentation/deportiva_card.dart';
+import 'package:diego/presentation/helpers/deportiva_screen.dart';
+import 'package:diego/presentation/helper_constructor_deportiva.dart.dart';
 import 'package:diego/presentation/login_screen.dart';
 import 'package:diego/presentation/welcome_screen.dart';
 import 'package:diego/presentation/contador_screen.dart';
@@ -22,6 +22,7 @@ class _TareasScreenState extends State<TareasScreen> {
   List<Task> _tareas = [];
   int _nextTaskId = 7; // Para simular nuevas tareas
   bool _isLoading = false;
+  int taskCounter = 0;
 
   @override
   void initState() {
@@ -47,9 +48,10 @@ class _TareasScreenState extends State<TareasScreen> {
 
   Future<void> _cargarTareas() async {
     try {
-      final tareas = await _taskService.getTasks();
+      final tareas = await _taskService.getTasksWithSteps();
       setState(() {
         _tareas = tareas;
+        taskCounter = _tareas.length;
       });
     } catch (e) {
       _mostrarError('Error al cargar tareas: $e');
@@ -63,27 +65,35 @@ class _TareasScreenState extends State<TareasScreen> {
       _isLoading = true;
     });
 
-    // Simulamos carga de 5 tareas nuevas
+    // Simulamos carga de 6 tareas nuevas
     await Future.delayed(const Duration(seconds: 1));
 
     final nuevasTareas = List.generate(6, (index) {
-      return Task(
+      final nuevaTarea = Task(
         title: 'Tarea ${_nextTaskId + index}',
         descripcion: 'Descripción de tarea ${_nextTaskId + index}',
         fecha: DateTime.now().add(Duration(days: index)),
         type: index % 2 == 0 ? 'NORMAL' : 'URGENTE',
-        fechaLimite: DateTime.now().add(Duration(days: index + 1)),
-        pasos: List.generate(
-          3,
-          (i) => 'Paso ${i + 1} de tarea ${_nextTaskId + index}',
-        ),
+        deadline: DateTime.now().add(Duration(days: index + 1)),
+        pasos: [], // Inicialmente vacío
       );
+
+      // Generar pasos para la nueva tarea
+      nuevaTarea.pasos = _taskService.obtenerPasos(
+        nuevaTarea.title,
+        nuevaTarea.deadline,
+      );
+
+      return nuevaTarea;
     });
 
     setState(() {
       _tareas.addAll(nuevasTareas);
       _nextTaskId += 6;
       _isLoading = false;
+    });
+    setState(() {
+      taskCounter = _tareas.length;
     });
   }
 
@@ -281,7 +291,7 @@ class _TareasScreenState extends State<TareasScreen> {
                   type: tipo,
                   fecha: fechaSeleccionada!,
                   descripcion: detalle,
-                  fechaLimite: fechaSeleccionada!,
+                  deadline: fechaSeleccionada!,
                   pasos: _taskService.obtenerPasos(
                     tituloController.text,
                     DateTime.now().add(const Duration(days: 1)),
@@ -309,7 +319,7 @@ class _TareasScreenState extends State<TareasScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: const Text(TITLE_APPBAR),
+        title: Text('$tituloAppbar\nCantidad de tareas: $taskCounter'),
         backgroundColor: Colors.pinkAccent,
       ),
       drawer: Drawer(
@@ -396,7 +406,7 @@ class _TareasScreenState extends State<TareasScreen> {
       ),
       body:
           _tareas.isEmpty
-              ? const Center(child: Text(EMPTY_LIST))
+              ? const Center(child: Text(listaVacia))
               : ListView.builder(
                 controller: _scrollController,
                 itemCount: _tareas.length + 1, // +1 para el indicador de carga
@@ -409,7 +419,9 @@ class _TareasScreenState extends State<TareasScreen> {
                             child: CircularProgressIndicator(),
                           ),
                         )
-                        : const SizedBox();
+                        : const SizedBox(
+                          height: 8.0,
+                        ); // Espacio vacío si no se está cargando más
                   }
 
                   final task = _tareas[index];
@@ -421,8 +433,7 @@ class _TareasScreenState extends State<TareasScreen> {
                         MaterialPageRoute(
                           builder:
                               (context) => DetalleTarjetaScreen(
-                                task: task,
-                                index: index,
+                                initialIndex: index,
                                 tasks:
                                     _tareas, // Pass the required 'tasks' parameter
                               ),
@@ -433,6 +444,7 @@ class _TareasScreenState extends State<TareasScreen> {
                       task,
                       onEdit: () => _mostrarModalAgregarTarea(index: index),
                       onDelete: () => _eliminarTarea(index),
+                      context: context,
                     ),
                   );
                 },
