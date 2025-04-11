@@ -25,7 +25,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     setState(() {
       quotes = [
         'Cotización 1: 100',
-        'Cotización 2: 200',
+        'Cotización 2: 2000',
         'Cotización 3: 300',
         'Cotización 4: 400',
       ];
