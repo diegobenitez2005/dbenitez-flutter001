@@ -1,5 +1,6 @@
+import 'package:diego/presentation/helpers/common_widgets_herlpers.dart';
 import 'package:flutter/material.dart';
-import 'package:diego/presentation/login_screen.dart';
+import 'package:diego/presentation/welcome_screen.dart';
 
 class ContadorScreen extends StatefulWidget {
   const ContadorScreen({super.key});
@@ -33,9 +34,10 @@ class _ContadorScreenState extends State<ContadorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Contador'),
+        backgroundColor: Colors.pink,
+        title: CommonWidgetsHelper.buildBoldTitle('Contador'),
       ),
+      drawer: CommonWidgetsHelper.buildDrawer(context),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -62,10 +64,10 @@ class _ContadorScreenState extends State<ContadorScreen> {
               onPressed: () async {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  MaterialPageRoute(builder: (context) => const WelcomeScreen()),
                 );
               },
-              child: const Text('Ir a Login'),
+              child: const Text('Ir a la pantalla de bienvenida'),
             ),
           ],
         ),
