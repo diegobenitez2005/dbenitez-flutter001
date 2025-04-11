@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:diego/api/service/auth_service.dart';
 import 'package:diego/presentation/welcome_screen.dart';
-
+import 'package:diego/presentation/helpers/common_widgets_herlpers.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -17,7 +17,8 @@ class LoginScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login.'),
+        title: CommonWidgetsHelper.buildBoldTitle('Iniciar Sesión'),
+        backgroundColor: Colors.pinkAccent,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -61,26 +62,26 @@ class LoginScreen extends StatelessWidget {
                   if (formKey.currentState!.validate()) {
                     final String username = usernameController.text.trim();
                     final String password = passwordController.text.trim();
-                    
+
                     try {
                       // Llama al servicio de autenticación
                       await authService.login(username, password);
 
                       // Muestra un mensaje de éxito
-                      
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
-                      
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => WelcomeScreen(),
+                        ),
+                      );
                     } catch (e) {
                       // Maneja errores del servicio
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(e.toString())),
-                      );
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(e.toString())));
                     }
                   }
-                  
-                
-              
-                
                 },
                 child: const Text('Iniciar Sesión'),
               ),

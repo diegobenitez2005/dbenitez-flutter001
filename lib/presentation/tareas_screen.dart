@@ -1,13 +1,11 @@
+import 'package:diego/presentation/helpers/common_widgets_herlpers.dart';
 import 'package:flutter/material.dart';
 import 'package:diego/domain/entities/task.dart';
 import 'package:diego/constants/constants.dart';
 import 'package:diego/api/service/task_service.dart';
 import 'package:diego/presentation/helpers/task_card_helper.dart';
-import 'package:diego/presentation/helpers/deportiva_screen.dart';
-import 'package:diego/presentation/helper_constructor_deportiva.dart.dart';
-import 'package:diego/presentation/login_screen.dart';
-import 'package:diego/presentation/welcome_screen.dart';
-import 'package:diego/presentation/contador_screen.dart';
+import 'package:diego/presentation/deportiva_screen.dart';
+
 
 class TareasScreen extends StatefulWidget {
   const TareasScreen({super.key});
@@ -23,6 +21,7 @@ class _TareasScreenState extends State<TareasScreen> {
   int _nextTaskId = 7; // Para simular nuevas tareas
   bool _isLoading = false;
   int taskCounter = 0;
+  
 
   @override
   void initState() {
@@ -48,9 +47,12 @@ class _TareasScreenState extends State<TareasScreen> {
 
   Future<void> _cargarTareas() async {
     try {
+
+      
       final tareas = await _taskService.getTasksWithSteps();
       setState(() {
         _tareas = tareas;
+        taskCounter = _tareas.length;
         taskCounter = _tareas.length;
       });
     } catch (e) {
@@ -95,6 +97,9 @@ class _TareasScreenState extends State<TareasScreen> {
     setState(() {
       taskCounter = _tareas.length;
     });
+    setState(() {
+      taskCounter = _tareas.length;
+    });
   }
 
   Future<void> _agregarTarea(Task tarea) async {
@@ -126,6 +131,7 @@ class _TareasScreenState extends State<TareasScreen> {
       await _taskService.deleteTask(index);
       setState(() {
         _tareas.removeAt(index);
+        taskCounter = _tareas.length;
       });
     } catch (e) {
       _mostrarError('Error al eliminar tarea: $e');
@@ -319,91 +325,13 @@ class _TareasScreenState extends State<TareasScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: Text('$tituloAppbar\nCantidad de tareas: $taskCounter'),
+        title: CommonWidgetsHelper.buildBoldTitle(
+          'Lista de Tareas\nTareas ($taskCounter)', // 'Tareas ($taskCounter)' (Contador de tareas en el título de la AppBar)',
+          // Título de la AppBar)',
+        ),
         backgroundColor: Colors.pinkAccent,
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(color: Colors.pinkAccent),
-              child: Text(
-                'Menú de Navegación',
-                style: TextStyle(color: Colors.white, fontSize: 18),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Inicio'),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => WelcomeScreen()),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.task),
-              title: Text('Tareas'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => TareasScreen()),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.tag_faces_sharp),
-              title: Text('Contador'),
-              onTap: () {
-                // Acción para la configuración
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ContadorScreen()),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.exit_to_app),
-              title: Text('Cerrar Sesión'),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text('Confirmar'),
-                      content: Text(
-                        '¿Estás seguro de que deseas cerrar sesión?',
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(); // Cierra el diálogo
-                          },
-                          child: Text('Cancelar'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(); // Cierra el diálogo
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LoginScreen(),
-                              ),
-                            );
-                          },
-                          child: Text('Cerrar Sesión'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: CommonWidgetsHelper.buildDrawer(context),
       body:
           _tareas.isEmpty
               ? const Center(child: Text(listaVacia))
@@ -422,6 +350,7 @@ class _TareasScreenState extends State<TareasScreen> {
                         : const SizedBox(
                           height: 8.0,
                         ); // Espacio vacío si no se está cargando más
+                         // Espacio vacío si no se está cargando más
                   }
 
                   final task = _tareas[index];
