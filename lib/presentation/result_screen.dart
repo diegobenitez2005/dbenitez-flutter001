@@ -1,3 +1,4 @@
+import 'package:diego/presentation/start_screen.dart';
 import 'package:flutter/material.dart';
 
 class ResultScreen extends StatelessWidget {
@@ -23,12 +24,16 @@ class ResultScreen extends StatelessWidget {
             const SizedBox(height: 20),
             Text(
               '$score',
-              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.green),
+              style: const TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+              ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.popUntil(context, (route) => route.isFirst);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const StartScreen()));
               },
               child: const Text('Volver al Inicio'),
             ),

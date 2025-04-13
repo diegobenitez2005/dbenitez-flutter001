@@ -10,7 +10,5 @@ class Question {
   });
 
   // Método para verificar si una respuesta es correcta
-  bool isCorrect(int selectedIndex) {
-    return selectedIndex == correctAnswerIndex;
-  }
+  
 }

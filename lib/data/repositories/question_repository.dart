@@ -1,6 +1,8 @@
 import 'package:diego/domain/entities/question.dart';
 
 class QuestionRepository {
+  // Removed incorrect static access to correctAnswerIndex
+  
   static final List<Question> initialQuestions = [
     Question(
       questionText: '¿Cuál es la capital de Francia?',
@@ -23,9 +25,11 @@ class QuestionRepository {
       correctAnswerIndex: 2, // Pacífico
     ),
   ];
+  
 
   // Método para obtener todas las preguntas
   List<Question> getQuestions() {
     return List.from(initialQuestions);
   }
+  
 }

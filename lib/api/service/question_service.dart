@@ -8,4 +8,7 @@ class QuestionService {
   List<Question> getQuestions() {
     return _repository.getQuestions();
   }
+  bool isCorrect(Question question, int selectedIndex) {
+    return selectedIndex == question.correctAnswerIndex; // Verifica si la respuesta es correcta
+  }
 }
