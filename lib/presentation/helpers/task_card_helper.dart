@@ -24,7 +24,7 @@ class TaskCardHelper {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '$tareaEliminada',
+              '$tarea_eliminada',
 
               style: TextStyle(
                 color: Colors.amber[50],

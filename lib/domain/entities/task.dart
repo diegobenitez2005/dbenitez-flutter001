@@ -9,10 +9,10 @@ class Task {
   DateTime deadline;
   Task({
     required this.title,
-    this.type = taskTypeNormal,
+    this.type = task_type_normal,
     required this.descripcion,
     required this.fecha,
-    this.pasos = listaPasosVacia,
+    this.pasos = lista_pasos_vacia,
     required this.deadline,
   });
 }

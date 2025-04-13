@@ -36,9 +36,8 @@ class CommonWidgetsHelper {
   /// Construye un pie de página en negrita.
   static Widget buildBoldFooter(String footer) {
     return Text(
-      '$fechaLimite $footer',
+      '$fecha_limite $footer',
       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-      
     );
   }
 
@@ -144,13 +143,18 @@ class CommonWidgetsHelper {
       unselectedItemColor: Colors.white,
       onTap: onTap, // Maneja el evento de selección
       items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.tag_faces,color: Colors.white), 
-        label: "Contador",),
-        BottomNavigationBarItem(icon: Icon(Icons.add,color: Colors.white), 
-        label: 'Añadir Tarea',),
-        BottomNavigationBarItem(icon: Icon(Icons.close,color: Colors.white), 
-        label: "Salir"),
-        
+        BottomNavigationBarItem(
+          icon: Icon(Icons.tag_faces, color: Colors.white),
+          label: "Contador",
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.add, color: Colors.white),
+          label: 'Añadir Tarea',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.close, color: Colors.white),
+          label: "Salir",
+        ),
       ],
     );
   }
