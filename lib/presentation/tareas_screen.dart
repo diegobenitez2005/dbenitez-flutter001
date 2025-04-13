@@ -6,7 +6,6 @@ import 'package:diego/api/service/task_service.dart';
 import 'package:diego/presentation/helpers/task_card_helper.dart';
 import 'package:diego/presentation/deportiva_screen.dart';
 
-
 class TareasScreen extends StatefulWidget {
   const TareasScreen({super.key});
 
@@ -21,7 +20,6 @@ class _TareasScreenState extends State<TareasScreen> {
   int _nextTaskId = 7; // Para simular nuevas tareas
   bool _isLoading = false;
   int taskCounter = 0;
-  
 
   @override
   void initState() {
@@ -47,8 +45,6 @@ class _TareasScreenState extends State<TareasScreen> {
 
   Future<void> _cargarTareas() async {
     try {
-
-      
       final tareas = await _taskService.getTasksWithSteps();
       setState(() {
         _tareas = tareas;
@@ -165,7 +161,7 @@ class _TareasScreenState extends State<TareasScreen> {
       text: task?.type ?? '',
     );
 
-    void _seleccionarFecha() async {
+    void seleccionarFecha() async {
       DateTime? nuevaFecha = await showDatePicker(
         context: context,
         initialDate: fechaSeleccionada ?? DateTime.now(),
@@ -213,7 +209,7 @@ class _TareasScreenState extends State<TareasScreen> {
                     border: OutlineInputBorder(),
                     hintText: 'Seleccionar Fecha',
                   ),
-                  onTap: () => _seleccionarFecha(),
+                  onTap: () => seleccionarFecha(),
                 ),
                 const SizedBox(height: 16),
                 // TextField(
@@ -268,7 +264,7 @@ class _TareasScreenState extends State<TareasScreen> {
             ),
           ),
           actions: [
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Cierra el modal sin guardar
@@ -334,7 +330,7 @@ class _TareasScreenState extends State<TareasScreen> {
       drawer: CommonWidgetsHelper.buildDrawer(context),
       body:
           _tareas.isEmpty
-              ? const Center(child: Text(listaVacia))
+              ? const Center(child: Text(lista_vacia))
               : ListView.builder(
                 controller: _scrollController,
                 itemCount: _tareas.length + 1, // +1 para el indicador de carga
@@ -350,7 +346,7 @@ class _TareasScreenState extends State<TareasScreen> {
                         : const SizedBox(
                           height: 8.0,
                         ); // Espacio vacío si no se está cargando más
-                         // Espacio vacío si no se está cargando más
+                    // Espacio vacío si no se está cargando más
                   }
 
                   final task = _tareas[index];
@@ -380,8 +376,8 @@ class _TareasScreenState extends State<TareasScreen> {
               ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _mostrarModalAgregarTarea(),
-        child: const Icon(Icons.add),
         backgroundColor: Colors.pinkAccent,
+        child: const Icon(Icons.add),
       ),
     );
   }

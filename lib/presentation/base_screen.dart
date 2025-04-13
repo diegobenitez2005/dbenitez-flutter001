@@ -4,11 +4,11 @@ import 'package:diego/presentation/tareas_screen.dart';
 import 'package:diego/presentation/login_screen.dart';
 import 'package:diego/presentation/welcome_screen.dart';
 
-class BaseScreen extends StatelessWidget {
-  final Widget child; // Contenido de la pantalla
-  final String title; // Título de la AppBar
+class BaseScreen extends StatelessWidget { // Título de la AppBar
 
   const BaseScreen({super.key, required this.child, required this.title});
+  final Widget child; // Contenido de la pantalla
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class BaseScreen extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(color: Colors.pinkAccent),
               child: Text(
                 'Menú de Navegación',
@@ -26,57 +26,57 @@ class BaseScreen extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Inicio'),
+              leading: const Icon(Icons.home),
+              title: const Text('Inicio'),
               onTap: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                  MaterialPageRoute(builder: (context) => const WelcomeScreen()),
                 );
               },
             ),
             ListTile(
-              leading: Icon(Icons.task),
-              title: Text('Tareas'),
+              leading: const Icon(Icons.task),
+              title: const Text('Tareas'),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => TareasScreen()),
+                  MaterialPageRoute(builder: (context) => const TareasScreen()),
                 );
               },
             ),
             ListTile(
-              leading: Icon(Icons.tag_faces_sharp),
-              title: Text('Contador'),
-              onTap: () {
-                // Acción para la configuración
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ContadorScreen()),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.tag_faces_sharp),
-              title: Text('Contador'),
+              leading: const Icon(Icons.tag_faces_sharp),
+              title: const Text('Contador'),
               onTap: () {
                 // Acción para la configuración
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ContadorScreen()),
+                  MaterialPageRoute(builder: (context) => const ContadorScreen()),
                 );
               },
             ),
             ListTile(
-              leading: Icon(Icons.exit_to_app),
-              title: Text('Cerrar Sesión'),
+              leading: const Icon(Icons.tag_faces_sharp),
+              title: const Text('Contador'),
+              onTap: () {
+                // Acción para la configuración
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ContadorScreen()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.exit_to_app),
+              title: const Text('Cerrar Sesión'),
               onTap: () {
                 showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text('Confirmar'),
-                      content: Text(
+                      title: const Text('Confirmar'),
+                      content: const Text(
                         '¿Estás seguro de que deseas cerrar sesión?',
                       ),
                       actions: [
@@ -84,7 +84,7 @@ class BaseScreen extends StatelessWidget {
                           onPressed: () {
                             Navigator.of(context).pop(); // Cierra el diálogo
                           },
-                          child: Text('Cancelar'),
+                          child: const Text('Cancelar'),
                         ),
                         ElevatedButton(
                           onPressed: () {
@@ -92,11 +92,11 @@ class BaseScreen extends StatelessWidget {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => LoginScreen(),
+                                builder: (context) => const LoginScreen(),
                               ),
                             );
                           },
-                          child: Text('Cerrar Sesión'),
+                          child: const Text('Cerrar Sesión'),
                         ),
                       ],
                     );

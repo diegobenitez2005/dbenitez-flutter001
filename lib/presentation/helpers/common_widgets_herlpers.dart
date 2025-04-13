@@ -10,7 +10,7 @@ class CommonWidgetsHelper {
   static Widget buildBoldTitle(String title) {
     return Text(
       title,
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 22,
         fontWeight: FontWeight.bold,
         color: Colors.white,
@@ -36,9 +36,8 @@ class CommonWidgetsHelper {
   /// Construye un pie de página en negrita.
   static Widget buildBoldFooter(String footer) {
     return Text(
-      '$fechaLimite $footer',
+      '$fecha_limite $footer',
       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-      
     );
   }
 
@@ -57,7 +56,7 @@ class CommonWidgetsHelper {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
+          const DrawerHeader(
             decoration: BoxDecoration(color: Colors.pinkAccent),
             child: Text(
               'Menú de Navegación',
@@ -65,53 +64,53 @@ class CommonWidgetsHelper {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.home),
-            title: Text('Inicio'),
+            leading: const Icon(Icons.home),
+            title: const Text('Inicio'),
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                MaterialPageRoute(builder: (context) => const WelcomeScreen()),
               );
             },
           ),
           ListTile(
-            leading: Icon(Icons.task),
-            title: Text('Tareas'),
+            leading: const Icon(Icons.task),
+            title: const Text('Tareas'),
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TareasScreen()),
+                MaterialPageRoute(builder: (context) => const TareasScreen()),
               );
             },
           ),
           ListTile(
-            leading: Icon(Icons.tag_faces_sharp),
-            title: Text('Contador'),
+            leading: const Icon(Icons.tag_faces_sharp),
+            title: const Text('Contador'),
             onTap: () {
               // Acción para la configuración
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ContadorScreen()),
+                MaterialPageRoute(builder: (context) => const ContadorScreen()),
               );
             },
           ),
           ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text('Salir'),
+            leading: const Icon(Icons.exit_to_app),
+            title: const Text('Salir'),
             onTap: () {
               // Cierra la aplicación
               showDialog(
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    title: Text('Confirmar'),
-                    content: Text('¿Estás seguro de que deseas salir?'),
+                    title: const Text('Confirmar'),
+                    content: const Text('¿Estás seguro de que deseas salir?'),
                     actions: [
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).pop(); // Cierra el diálogo
                         },
-                        child: Text('Cancelar'),
+                        child: const Text('Cancelar'),
                       ),
                       ElevatedButton(
                         onPressed: () {
@@ -119,11 +118,11 @@ class CommonWidgetsHelper {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => LoginScreen(),
+                              builder: (context) => const LoginScreen(),
                             ),
                           ); // Redirige al login
                         },
-                        child: Text('Salir'),
+                        child: const Text('Salir'),
                       ),
                     ],
                   );
@@ -144,13 +143,18 @@ class CommonWidgetsHelper {
       unselectedItemColor: Colors.white,
       onTap: onTap, // Maneja el evento de selección
       items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.tag_faces,color: Colors.white), 
-        label: "Contador",),
-        BottomNavigationBarItem(icon: Icon(Icons.add,color: Colors.white), 
-        label: 'Añadir Tarea',),
-        BottomNavigationBarItem(icon: Icon(Icons.close,color: Colors.white), 
-        label: "Salir"),
-        
+        BottomNavigationBarItem(
+          icon: Icon(Icons.tag_faces, color: Colors.white),
+          label: "Contador",
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.add, color: Colors.white),
+          label: 'Añadir Tarea',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.close, color: Colors.white),
+          label: "Salir",
+        ),
       ],
     );
   }

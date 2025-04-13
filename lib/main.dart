@@ -1,5 +1,3 @@
-import 'package:diego/presentation/tareas_screen.dart';
-import 'package:diego/presentation/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:diego/presentation/login_screen.dart';
 

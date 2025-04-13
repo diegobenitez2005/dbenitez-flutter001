@@ -1,9 +1,11 @@
-import 'package:diego/presentation/helpers/common_widgets_herlpers.dart';
 import 'package:flutter/material.dart';
-import 'package:diego/presentation/welcome_screen.dart';
-
+import 'package:diego/presentation/helpers/common_widgets_herlpers.dart';
 class ContadorScreen extends StatefulWidget {
   const ContadorScreen({super.key});
+
+  
+
+  
 
   @override
   State<ContadorScreen> createState() => _ContadorScreenState();
@@ -14,6 +16,7 @@ class _ContadorScreenState extends State<ContadorScreen> {
 
   void _incrementCounter() {
     setState(() {
+      
       _counter++;
     });
   }
@@ -32,14 +35,19 @@ class _ContadorScreenState extends State<ContadorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.pink,
+        
+        backgroundColor: Colors.pinkAccent,
+        
         title: CommonWidgetsHelper.buildBoldTitle('Contador'),
       ),
       drawer: CommonWidgetsHelper.buildDrawer(context),
       body: Center(
+        
         child: Column(
+          
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
@@ -51,24 +59,17 @@ class _ContadorScreenState extends State<ContadorScreen> {
               _counter > 0
                   ? 'El contador es positivo'
                   : _counter < 0
-                      ? 'El contador es negativo'
-                      : 'El contador es cero',
+                  ? 'El contador es negativo'
+                  : 'El contador es cero',
               style: TextStyle(
                 fontSize: 16,
-                color: _counter > 0
-                    ? Colors.green
-                    : (_counter < 0 ? Colors.red : Colors.black),
+                color:
+                    _counter > 0
+                        ? Colors.green
+                        : (_counter < 0 ? Colors.red : Colors.black),
               ),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-                );
-              },
-              child: const Text('Ir a la pantalla de bienvenida'),
-            ),
+           
           ],
         ),
       ),
@@ -76,19 +77,19 @@ class _ContadorScreenState extends State<ContadorScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-            heroTag: 'Increment',
+            heroTag:  'Increment',
             onPressed: _incrementCounter,
             tooltip: 'Increment',
             child: const Icon(Icons.add),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 10), // Espaciado entre los botones
           FloatingActionButton(
             heroTag: 'Decrement',
             onPressed: _decrementCounter,
             tooltip: 'Decrement',
             child: const Icon(Icons.remove),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 10), // Espaciado entre los botones
           FloatingActionButton(
             heroTag: 'Reset',
             onPressed: _resetCounter,
