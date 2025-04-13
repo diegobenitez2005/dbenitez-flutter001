@@ -1,14 +1,41 @@
-import 'package:diego/presentation/start_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:diego/presentation/start_screen.dart';
 
 class ResultScreen extends StatelessWidget {
-  final int score;
+  final int finalScore;
+  final int totalQuestions;
 
-  const ResultScreen({super.key, required this.score});
+  const ResultScreen({
+    super.key,
+    required this.finalScore,
+    required this.totalQuestions,
+  });
+
 
   @override
   Widget build(BuildContext context) {
+    // Texto del puntaje final
+    double spacingHeight = 20.0;
+    final String scoreText = 'Puntuación Final: $finalScore/$totalQuestions';
+    SizedBox(height: spacingHeight);
+    // Mensaje de retroalimentación
+    final String feedbackMessage =
+        finalScore > (totalQuestions / 2)
+            ? '¡Buen trabajo!'
+            : '¡Sigue practicando!';
+    final Color buttonColor =
+        finalScore > (totalQuestions / 2) 
+            ? Colors.blue 
+            : Colors.red;
+    // Estilo del texto del puntaje
+    const TextStyle scoreTextStyle = TextStyle(
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+      color: Colors.black,
+    );
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Resultados'),
         backgroundColor: Colors.pinkAccent,
@@ -17,25 +44,31 @@ class ResultScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Tu puntuación final es:',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+            Text(scoreText, style: scoreTextStyle, textAlign: TextAlign.center),
             const SizedBox(height: 20),
             Text(
-              '$score',
-              style: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
-              ),
+              feedbackMessage,
+              style: const TextStyle(fontSize: 18, color: Colors.grey),
+              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const StartScreen()));
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const StartScreen()),
+                  (route) => false, // Elimina todas las pantallas anteriores
+                );
               },
-              child: const Text('Volver al Inicio'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: buttonColor,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                textStyle: const TextStyle(fontSize: 18),
+              ),
+              child: const Text('Jugar de nuevo'),
             ),
           ],
         ),

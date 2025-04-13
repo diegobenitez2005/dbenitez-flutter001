@@ -25,21 +25,37 @@ class _GameScreenState extends State<GameScreen> {
 
   void _handleAnswer(int selectedIndex) {
     // Llama al método isCorrect desde el servicio
-    if (_questionService.isCorrect(
+    final isCorrect = _questionService.isCorrect(
       questionsList[currentQuestionIndex],
       selectedIndex,
-    )) {
+    );
+
+    final snackBarMessage =
+        isCorrect
+            ? '¡Respuesta correcta!'
+            : 'Respuesta incorrecta.';
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(snackBarMessage),
+        duration: const Duration(seconds: 1),
+      ),
+    );
+
+    if (isCorrect) {
       userScore++;
       setState(() {
-        color = Colors.green; // Cambia el color del botón a verde si la respuesta es correcta
+        color =
+            Colors
+                .green; // Cambia el color del botón a verde si la respuesta es correcta
       });
-    }
-    else {
+    } else {
       setState(() {
-        color = Colors.red; // Cambia el color del botón a rojo si la respuesta es incorrecta
+        color =
+            Colors
+                .red; // Cambia el color del botón a rojo si la respuesta es incorrecta
       });
     }
-      
 
     Future.delayed(const Duration(seconds: 1), () {
       if (currentQuestionIndex < questionsList.length - 1) {
@@ -51,7 +67,11 @@ class _GameScreenState extends State<GameScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => ResultScreen(score: userScore),
+            builder:
+                (context) => ResultScreen(
+                  finalScore: userScore,
+                  totalQuestions: questionsList.length,
+                ),
           ),
         );
       }
@@ -63,7 +83,7 @@ class _GameScreenState extends State<GameScreen> {
     final question = questionsList[currentQuestionIndex];
     final questionCounterText =
         'Pregunta ${currentQuestionIndex + 1} de ${questionsList.length}';
-
+    double spacingHeight = 16.0;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -90,7 +110,7 @@ class _GameScreenState extends State<GameScreen> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: spacingHeight),
             ...question.answerOptions.asMap().entries.map((entry) {
               final index = entry.key;
               final option = entry.value;
