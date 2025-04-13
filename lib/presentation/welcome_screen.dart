@@ -1,8 +1,5 @@
 import 'package:diego/presentation/helpers/common_widgets_herlpers.dart';
 import 'package:flutter/material.dart';
-import 'package:diego/presentation/contador_screen.dart';
-import 'package:diego/presentation/login_screen.dart';
-import 'package:diego/presentation/tareas_screen.dart';
 import 'package:diego/presentation/start_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {

@@ -161,7 +161,7 @@ class _TareasScreenState extends State<TareasScreen> {
       text: task?.type ?? '',
     );
 
-    void _seleccionarFecha() async {
+    void seleccionarFecha() async {
       DateTime? nuevaFecha = await showDatePicker(
         context: context,
         initialDate: fechaSeleccionada ?? DateTime.now(),
@@ -209,7 +209,7 @@ class _TareasScreenState extends State<TareasScreen> {
                     border: OutlineInputBorder(),
                     hintText: 'Seleccionar Fecha',
                   ),
-                  onTap: () => _seleccionarFecha(),
+                  onTap: () => seleccionarFecha(),
                 ),
                 const SizedBox(height: 16),
                 // TextField(
@@ -264,7 +264,7 @@ class _TareasScreenState extends State<TareasScreen> {
             ),
           ),
           actions: [
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Cierra el modal sin guardar
@@ -376,8 +376,8 @@ class _TareasScreenState extends State<TareasScreen> {
               ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _mostrarModalAgregarTarea(),
-        child: const Icon(Icons.add),
         backgroundColor: Colors.pinkAccent,
+        child: const Icon(Icons.add),
       ),
     );
   }

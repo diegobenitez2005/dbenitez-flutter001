@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:diego/presentation/helpers/common_widgets_herlpers.dart';
 class ContadorScreen extends StatefulWidget {
-  const ContadorScreen();
+  const ContadorScreen({super.key});
 
   
 

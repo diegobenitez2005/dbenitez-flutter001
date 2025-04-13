@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:diego/presentation/start_screen.dart';
 
 class ResultScreen extends StatelessWidget {
-  final int finalScore;
-  final int totalQuestions;
 
   const ResultScreen({
     super.key,
     required this.finalScore,
     required this.totalQuestions,
   });
+  final int finalScore;
+  final int totalQuestions;
 
 
   @override

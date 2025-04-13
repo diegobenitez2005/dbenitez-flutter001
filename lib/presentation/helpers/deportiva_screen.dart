@@ -3,14 +3,14 @@ import 'package:diego/domain/entities/task.dart';
 import 'package:diego/presentation/helper_constructor_deportiva.dart.dart';
 
 class DetalleTarjetaScreen extends StatefulWidget {
-  final int initialIndex;
-  final List<Task> tasks;
 
   const DetalleTarjetaScreen({
-    Key? key,
+    super.key,
     required this.initialIndex,
     required this.tasks,
-  }) : super(key: key);
+  });
+  final int initialIndex;
+  final List<Task> tasks;
 
   @override
   DetalleTarjetaScreenState createState() => DetalleTarjetaScreenState();

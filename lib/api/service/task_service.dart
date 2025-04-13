@@ -3,10 +3,10 @@ import 'package:diego/data/repositories/task_repository.dart';
 import 'package:diego/data/repositories/assistant_repository.dart';
 
 class TaskService {
-  // Singleton pattern
-  static final TaskService _instance = TaskService._internal();
   factory TaskService() => _instance;
   TaskService._internal();
+  // Singleton pattern
+  static final TaskService _instance = TaskService._internal();
 
   // Repository instance
   final TaskRepository _repository = TaskRepository();

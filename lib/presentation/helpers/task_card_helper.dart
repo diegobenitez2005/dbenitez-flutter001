@@ -16,7 +16,7 @@ class TaskCardHelper {
       background: Container(
         alignment: Alignment.centerLeft,
         color: Colors.red,
-        child: Icon(Icons.delete),
+        child: const Icon(Icons.delete),
       ),
       direction: DismissDirection.startToEnd,
       onDismissed: (rigth) {
@@ -24,7 +24,7 @@ class TaskCardHelper {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '$tarea_eliminada',
+              tarea_eliminada,
 
               style: TextStyle(
                 color: Colors.amber[50],
@@ -101,9 +101,9 @@ class TaskCardHelper {
               ),
               if (task.pasos.isNotEmpty) ...[
                 const SizedBox(height: 8),
-                Text(
+                const Text(
                   PASOS_TITULO,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),

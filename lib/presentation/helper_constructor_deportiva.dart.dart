@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:diego/domain/entities/task.dart';
 
 class TarjetaDeportiva extends StatelessWidget {
+
+  const TarjetaDeportiva({super.key, required this.task, required this.index});
   final Task task;
   final int index;
 
-  const TarjetaDeportiva({required this.task, required this.index});
-
+  @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(30.0),
+      margin: const EdgeInsets.all(30.0),
       color: Colors.white,
       elevation: 8.0,
       shape: CommonWidgetsHelper.buildRoundedBorder(),
@@ -43,9 +44,9 @@ class TarjetaDeportiva extends StatelessWidget {
 
                 // Pasos de la tarea (máximo 3)
                 if (task.pasos.isNotEmpty) ...[
-                  Text(
+                  const Text(
                     'Pasos:',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
                     ),
