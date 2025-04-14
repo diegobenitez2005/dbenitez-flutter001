@@ -247,3 +247,8 @@ fabric.properties
 /android/key.properties
 /android/app/google-services.json
 .metadata
+
+#sonnar files
+.scannerwork
+sonar-project.properties
+*.iml
