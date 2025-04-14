@@ -43,7 +43,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: CommonWidgetsHelper.buildNavBar(0, (index) {}),
+      bottomNavigationBar: CommonWidgetsHelper.buildNavBar(0, context),
     );
   }
 }

@@ -135,13 +135,36 @@ class CommonWidgetsHelper {
     );
   }
 
-  static Widget buildNavBar(index, onTap) {
+  static Widget buildNavBar(int index, BuildContext context) {
     return BottomNavigationBar(
       backgroundColor: Colors.pinkAccent,
       currentIndex: index, // Índice del elemento seleccionado
       selectedItemColor: Colors.white, // Color de los labels seleccionados
       unselectedItemColor: Colors.white,
-      onTap: onTap, // Maneja el evento de selección
+      onTap: (selectedIndex) {
+        switch (selectedIndex) {
+          case 0:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const ContadorScreen()),
+            );
+            break;
+          case 1:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const TareasScreen()),
+            );
+            break;
+          case 2:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+            );
+            break;
+          default:
+            break;
+        }
+      },
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.tag_faces, color: Colors.white),
@@ -149,7 +172,7 @@ class CommonWidgetsHelper {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.add, color: Colors.white),
-          label: 'Añadir Tarea',
+          label: 'Tareas',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.close, color: Colors.white),

@@ -38,9 +38,13 @@ class TarjetaDeportiva extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CommonWidgetsHelper.buildBoldTitle(
-                  task.title,
-                ), // Título de la tarea
+                 Text(task.title,
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+
+                ),), // Título de la tarea
                 // Título de la tarea
                 CommonWidgetsHelper.buildSpacing(),
 
@@ -56,14 +60,19 @@ class TarjetaDeportiva extends StatelessWidget {
                   ),
                   ...task.pasos
                       .take(3)
-                      .map((paso) => CommonWidgetsHelper.buildInfoLines(paso)),
+                      .map(
+                        (paso) => CommonWidgetsHelper.buildInfoLines(
+                          paso,
+                        ),
+                      ),
                 ],
+
                 CommonWidgetsHelper.buildSpacing(),
+
                 // Fecha límite
-                CommonWidgetsHelper.buildBoldFooter(
-                  task.deadline.toString().split(' ')[0],
-                ),
+                CommonWidgetsHelper.buildBoldFooter(task.deadline.toString().split(' ')[0]),
                 CommonWidgetsHelper.buildSpacing(),
+                
               ],
             ),
           ),
