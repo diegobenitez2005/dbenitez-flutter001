@@ -17,6 +17,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         title: CommonWidgetsHelper.buildBoldTitle('Bienvenido'),
         backgroundColor: Colors.pinkAccent,
       ),
+      drawer: CommonWidgetsHelper.buildDrawer(context),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

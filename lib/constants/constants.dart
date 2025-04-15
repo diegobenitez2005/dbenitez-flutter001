@@ -1,4 +1,4 @@
-  class Constants {
+class Constants {
   static const listaVacia = 'No hay tareas';
   static const tituloAppbar = 'Mis Tareas';
   static const tipoTarea = 'Tipo:';
@@ -19,5 +19,5 @@
   static const emptyList = 'No hay cotizaciones';
   static const errorMessage = 'Error al cargar las cotizaciones';
   static const pageSize = 10;
-
+  static const dateTime = 'dd/MM/yyyy HH:mm';
 }

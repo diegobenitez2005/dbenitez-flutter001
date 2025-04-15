@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:diego/api/service/quote_service.dart';
 import 'package:diego/domain/entities/quote.dart';
 import 'package:diego/constants/constants.dart';
+import 'package:intl/intl.dart';
 
 class QuoteScreen extends StatefulWidget {
   const QuoteScreen({super.key});
@@ -39,11 +40,11 @@ class _QuoteScreenState extends State<QuoteScreen> {
     });
 
     try {
-      final newQuotes = await _quoteService.getPaginatedQuotes( 
-        _currentPage, pageSize: Constants.pageSize
-        );
-        
-      
+      final newQuotes = await _quoteService.getPaginatedQuotes(
+        _currentPage,
+        pageSize: Constants.pageSize,
+      );
+
       setState(() {
         _quotes.addAll(newQuotes);
         _currentPage++;
@@ -70,6 +71,7 @@ class _QuoteScreenState extends State<QuoteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: const Text(Constants.titleQuotes),
         backgroundColor: Colors.pinkAccent,
@@ -91,36 +93,49 @@ class _QuoteScreenState extends State<QuoteScreen> {
                         ),
                       );
                     }
-
                     final quote = _quotes[index];
-                    return Card(
-                      margin: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: ListTile(
-                        title: Text(
-                          quote.companyName,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Precio: \$${quote.stockPrice.toStringAsFixed(2)}',
-                            ),
-                            Text(
-                              'Cambio: ${quote.changePercentage.toStringAsFixed(2)}%',
-                              style: TextStyle(
-                                color:
-                                    quote.changePercentage >= 0
-                                        ? Colors.green
-                                        : Colors.red,
+
+                    const double sizedHeitght = 10.0;
+                    return Column(
+                      children: [
+                        Card(
+                          margin: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: ListTile(
+                            title: Text(
+                              quote.companyName,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ],
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Precio: \$${quote.stockPrice.toStringAsFixed(2)}',
+                                ),
+                                Text(
+                                  'Cambio: ${quote.changePercentage.toStringAsFixed(2)}%',
+                                  style: TextStyle(
+                                    color:
+                                        quote.changePercentage >= 0
+                                            ? Colors.green
+                                            : Colors.red,
+                                  ),
+                                ),
+                                Text(
+                                  'Última actualización: ${DateFormat('dd/MM/yyyy HH:mm').format(quote.lastUpdated)}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: sizedHeitght),
+                      ],
                     );
                   },
                 ),
