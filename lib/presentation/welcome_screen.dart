@@ -1,4 +1,4 @@
-import 'package:diego/presentation/helpers/common_widgets_herlpers.dart';
+import 'package:diego/helpers/common_widgets_herlpers.dart';
 import 'package:flutter/material.dart';
 import 'package:diego/presentation/start_screen.dart';
 

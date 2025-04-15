@@ -1,6 +1,7 @@
 import 'package:diego/constants/constants.dart';
 import 'package:diego/presentation/contador_screen.dart';
 import 'package:diego/presentation/login_screen.dart';
+import 'package:diego/presentation/quote_screen.dart';
 import 'package:diego/presentation/tareas_screen.dart';
 import 'package:diego/presentation/welcome_screen.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ class CommonWidgetsHelper {
   /// Construye un pie de página en negrita.
   static Widget buildBoldFooter(String footer) {
     return Text(
-      '$fecha_limite $footer',
+      '$fechaLimite $footer',
       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     );
   }
@@ -91,6 +92,17 @@ class CommonWidgetsHelper {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const ContadorScreen()),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.money),
+            title: const Text('Cotizaciones'),
+            onTap: () {
+              // Acción para la configuración
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const QuoteScreen()),
               );
             },
           ),

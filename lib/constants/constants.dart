@@ -1,13 +1,19 @@
-const lista_vacia = 'No hay tareas';
-const titulo_appbar = 'Mis Tareas';
-const tipo_tarea = 'Tipo:';
-const task_type_normal = 'NORMAL';
-const List<String> lista_pasos_vacia = [];
-const pasos_titulo = 'Pasos para completar';
-const fecha_limite = 'Fecha límite: ';
-const tarea_eliminada = 'Tarea eliminada';
-const title_app = 'Juego de Preguntas';
-const welcome_screen = '¡Bienvenido al Juego de Preguntas!';
-const start_game = 'Iniciar Juego';
-const final_score = 'Juego Terminado';
-const play_again = 'Jugar de nuevo';
+const listaVacia = 'No hay tareas';
+const tituloAppbar = 'Mis Tareas';
+const tipoTarea = 'Tipo:';
+const taskTypeNormal = 'NORMAL';
+const List<String> listaPasoVacia = [];
+const pasasTitulo = 'Pasos para completar';
+const fechaLimite = 'Fecha límite: ';
+const tareaEliminada = 'Tarea eliminada';
+const tittleApp = 'Juego de Preguntas';
+const welcomeScreen = '¡Bienvenido al Juego de Preguntas!';
+const startGame = 'Iniciar Juego';
+const finalScore = 'Juego Terminado';
+const playAgain = 'Jugar de nuevo';
+
+// Constantes para cotizaciones
+const titleQuotes = 'Cotizaciones Financieras';
+const loadingMessage = 'Cargando cotizaciones...';
+const emptyList = 'No hay cotizaciones';
+const errorMessage = 'Error al cargar las cotizaciones';

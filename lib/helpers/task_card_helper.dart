@@ -24,7 +24,7 @@ class TaskCardHelper {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              tarea_eliminada,
+              tareaEliminada,
 
               style: TextStyle(
                 color: Colors.amber[50],
@@ -103,10 +103,7 @@ class TaskCardHelper {
                 const SizedBox(height: 8),
                 const Text(
                   PASOS_TITULO,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0, top: 4.0),
