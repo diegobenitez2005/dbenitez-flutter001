@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:diego/domain/entities/task.dart';
-import 'package:diego/presentation/helpers/helper_constructor_deportiva.dart.dart';
+import 'package:diego/helpers/helper_constructor_deportiva.dart.dart';
 
 class DetalleTarjetaScreen extends StatefulWidget {
 

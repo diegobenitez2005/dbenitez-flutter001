@@ -1,4 +1,4 @@
-import 'package:diego/presentation/helpers/common_widgets_herlpers.dart';
+import 'package:diego/helpers/common_widgets_herlpers.dart';
 import 'package:flutter/material.dart';
 import 'package:diego/presentation/start_screen.dart';
 
@@ -17,6 +17,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         title: CommonWidgetsHelper.buildBoldTitle('Bienvenido'),
         backgroundColor: Colors.pinkAccent,
       ),
+      drawer: CommonWidgetsHelper.buildDrawer(context),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

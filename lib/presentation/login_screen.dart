@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:diego/api/service/auth_service.dart';
 import 'package:diego/presentation/welcome_screen.dart';
-import 'package:diego/presentation/helpers/common_widgets_herlpers.dart';
+import 'package:diego/helpers/common_widgets_herlpers.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});

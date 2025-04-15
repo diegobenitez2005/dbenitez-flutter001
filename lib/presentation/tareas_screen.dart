@@ -1,9 +1,9 @@
-import 'package:diego/presentation/helpers/common_widgets_herlpers.dart';
+import 'package:diego/helpers/common_widgets_herlpers.dart';
 import 'package:flutter/material.dart';
 import 'package:diego/domain/entities/task.dart';
 import 'package:diego/constants/constants.dart';
 import 'package:diego/api/service/task_service.dart';
-import 'package:diego/presentation/helpers/task_card_helper.dart';
+import 'package:diego/helpers/task_card_helper.dart';
 import 'package:diego/presentation/deportiva_screen.dart';
 
 class TareasScreen extends StatefulWidget {
@@ -330,7 +330,7 @@ class _TareasScreenState extends State<TareasScreen> {
       drawer: CommonWidgetsHelper.buildDrawer(context),
       body:
           _tareas.isEmpty
-              ? const Center(child: Text(lista_vacia))
+              ? const Center(child: Text(Constants.listaVacia))
               : ListView.builder(
                 controller: _scrollController,
                 itemCount: _tareas.length + 1, // +1 para el indicador de carga
