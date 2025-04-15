@@ -330,7 +330,7 @@ class _TareasScreenState extends State<TareasScreen> {
       drawer: CommonWidgetsHelper.buildDrawer(context),
       body:
           _tareas.isEmpty
-              ? const Center(child: Text(listaVacia))
+              ? const Center(child: Text(Constants.listaVacia))
               : ListView.builder(
                 controller: _scrollController,
                 itemCount: _tareas.length + 1, // +1 para el indicador de carga

@@ -24,7 +24,7 @@ class TaskCardHelper {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              tareaEliminada,
+              Constants.tareaEliminada,
 
               style: TextStyle(
                 color: Colors.amber[50],

@@ -3,10 +3,10 @@ import 'package:diego/constants/constants.dart';
 class Task {
   Task({
     required this.title,
-    this.type = taskTypeNormal,
+    this.type = Constants.taskTypeNormal,
     required this.descripcion,
     required this.fecha,
-    this.pasos = listaPasoVacia,
+    this.pasos = Constants.listaPasoVacia,
     required this.deadline,
   });
   final String title;

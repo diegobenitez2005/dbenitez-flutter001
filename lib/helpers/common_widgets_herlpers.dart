@@ -37,7 +37,7 @@ class CommonWidgetsHelper {
   /// Construye un pie de página en negrita.
   static Widget buildBoldFooter(String footer) {
     return Text(
-      '$fechaLimite $footer',
+      '$Constants.fechaLimite $footer',
       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     );
   }
