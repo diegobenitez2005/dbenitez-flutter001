@@ -5,7 +5,7 @@ import 'package:diego/presentation/quote_screen.dart';
 import 'package:diego/presentation/tareas_screen.dart';
 import 'package:diego/presentation/welcome_screen.dart';
 import 'package:flutter/material.dart';
-
+import 'package:diego/presentation/noticia_screen.dart';
 class CommonWidgetsHelper {
   /// Construye un título en negrita con tamaño 20.
   static Widget buildBoldTitle(String title) {
@@ -103,6 +103,17 @@ class CommonWidgetsHelper {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const QuoteScreen()),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.newspaper),
+            title: const Text('Noticias'),
+            onTap: () {
+              // Acción para la configuración
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const NoticiaScreen()),
               );
             },
           ),
