@@ -19,5 +19,12 @@ class Constants {
   static const emptyList = 'No hay cotizaciones';
   static const errorMessage = 'Error al cargar las cotizaciones';
   static const pageSize = 10;
-  static const dateTime = 'dd/MM/yyyy HH:mm';
+  static const formatoFecha = 'dd/MM/yyyy HH:mm';
+
+  //constantes para noticias
+  static const String tituloApp = 'Noticias Técnicas';
+  static const String mensajeCargando = 'Cargando noticias...';
+  static const String listaVaciaNoticia = 'No hay noticias disponibles';
+  static const String mensajeError = 'Error al cargar noticias';
+  static const double espaciadoAlto = 10.0;
 }
