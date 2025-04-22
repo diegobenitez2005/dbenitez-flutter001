@@ -27,4 +27,5 @@ class Constants {
   static const String listaVaciaNoticia = 'No hay noticias disponibles';
   static const String mensajeError = 'Error al cargar noticias';
   static const double espaciadoAlto = 10.0;
+  static const newUrl = 'https://crudcrud.com/api/3cc4f821fffa4ee381e907826a2061dc/noticias';
 }

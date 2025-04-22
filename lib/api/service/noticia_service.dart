@@ -5,19 +5,35 @@ import 'package:diego/domain/entities/noticia.dart';
 class NoticiaService {
   final NoticiaRepository _noticiaRepository = NoticiaRepository();
 
-  // Método para obtener noticias predefinidas
-  Future<List<Noticia>> obtenerNoticiasPredefinidas() async {
-    final noticias = await _noticiaRepository.fetchPredefinedNoticias();
-    _validarListaNoticias(noticias);
-    return noticias;
+  // Método para obtener las primeras 10 noticias desde la API
+  Future<List<Noticia>> obtenerNoticiasIniciales({
+    bool ordenarPorFecha = false,
+    bool ordenarPorFuente = false,
+  }) async {
+    try {
+      // Llama al repositorio para obtener las primeras 10 noticias
+      final noticias = await _noticiaRepository.fetchInitialNoticias();
+      _validarListaNoticias(noticias);
+
+      // Ordenar las noticias si se especifica
+      if (ordenarPorFecha) {
+        noticias.sort((a, b) => b.publicadaEl.compareTo(a.publicadaEl));
+      } else if (ordenarPorFuente) {
+        noticias.sort((a, b) => a.fuente.compareTo(b.fuente));
+      }
+
+      return noticias;
+    } catch (e) {
+      throw Exception('Error al obtener noticias iniciales: $e');
+    }
   }
 
-  
-
-  // Método para obtener noticias paginadas
+  // Método para obtener noticias paginadas desde la API
   Future<List<Noticia>> obtenerNoticiasPaginadas(
     int numeroPagina, {
     int tamanoPagina = Constants.pageSize, // Tamaño de página por defecto
+    bool ordenarPorFecha = false,
+    bool ordenarPorFuente = false,
   }) async {
     if (numeroPagina < 1) {
       throw ArgumentError('El número de página debe ser mayor o igual a 1.');
@@ -26,12 +42,34 @@ class NoticiaService {
       throw ArgumentError('El tamaño de página debe ser mayor que 0.');
     }
 
-    final noticias = await _noticiaRepository.fetchPaginatedNoticias(
-      numeroPagina,
-      pageSize: tamanoPagina,
-    );
-    _validarListaNoticias(noticias);
-    return noticias;
+    try {
+      // Llama al repositorio para obtener noticias paginadas
+      final noticias = await _noticiaRepository.fetchPaginatedNoticias(
+        numeroPagina,
+        pageSize: tamanoPagina,
+      );
+      _validarListaNoticias(noticias);
+
+      // Ordenar las noticias si se especifica
+      if (ordenarPorFecha) {
+        noticias.sort((a, b) => b.publicadaEl.compareTo(a.publicadaEl));
+      } else if (ordenarPorFuente) {
+        noticias.sort((a, b) => a.fuente.compareTo(b.fuente));
+      }
+
+      return noticias;
+    } catch (e) {
+      throw Exception('Error al obtener noticias paginadas: $e');
+    }
+  }
+
+  // Método para crear una noticia
+  Future<void> crearNoticia(Noticia noticia) async {
+    try {
+      await _noticiaRepository.crearNoticia(noticia);
+    } catch (e) {
+      throw Exception('Error al crear la noticia: $e');
+    }
   }
 
   // Método privado para validar una lista de noticias
