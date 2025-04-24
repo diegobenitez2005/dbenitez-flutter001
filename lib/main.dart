@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:diego/presentation/login_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 void main() {
+  dotenv.load(fileName: ".env"); // Carga las variables de entorno desde el archivo .env
   runApp(const MyApp());
 }
 

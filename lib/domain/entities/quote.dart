@@ -1,8 +1,4 @@
-class Quote {
-  final String companyName; // Nombre de la empresa
-  final double stockPrice; // Precio de la acción
-  final double changePercentage;
-  DateTime lastUpdated; // Porcentaje de cambio en el precio
+class Quote { // Porcentaje de cambio en el precio
 
   Quote({
     required this.companyName,
@@ -10,6 +6,10 @@ class Quote {
     required this.changePercentage,
     DateTime? lastUpdated,
   }) : lastUpdated = lastUpdated ?? DateTime.now();
+  final String companyName; // Nombre de la empresa
+  final double stockPrice; // Precio de la acción
+  final double changePercentage;
+  DateTime lastUpdated;
 
   @override
   String toString() {

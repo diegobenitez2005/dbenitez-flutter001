@@ -1,164 +1,352 @@
-import 'dart:math';
 import 'package:diego/constants/constants.dart';
 import 'package:diego/domain/entities/noticia.dart';
+import 'package:dio/dio.dart';
 
 class NoticiaRepository {
-  final List<Noticia> _noticias = [
-    Noticia(
-      titulo: 'Noticia 1',
-      descripcion: 'Descripción de la noticia 1.',
-      fuente: 'Fuente 1',
-      publicadaEl: DateTime.now(),
-    ),
-    Noticia(
-      titulo: 'Noticia 2',
-      descripcion: 'Descripción de la noticia 2.',
-      fuente: 'Fuente 2',
-      publicadaEl: DateTime.now().subtract(const Duration(days: 1)),
-    ),
-    Noticia(
-      titulo: 'Noticia 3',
-      descripcion: 'Descripción de la noticia 3.',
-      fuente: 'Fuente 3',
-      publicadaEl: DateTime.now().subtract(const Duration(days: 2)),
-    ),
-    Noticia(
-      titulo: 'Noticia 4',
-      descripcion: 'Descripción de la noticia 4.',
-      fuente: 'Fuente 4',
-      publicadaEl: DateTime.now().subtract(const Duration(days: 3)),
-    ),
-    Noticia(
-      titulo: 'Noticia 5',
-      descripcion: 'Descripción de la noticia 5.',
-      fuente: 'Fuente 5',
-      publicadaEl: DateTime.now().subtract(const Duration(days: 4)),
-    ),
-    Noticia(
-      titulo: 'Noticia 6',
-      descripcion: 'Descripción de la noticia 6.',
-      fuente: 'Fuente 6',
-      publicadaEl: DateTime.now().subtract(const Duration(days: 5)),
-    ),
-    Noticia(
-      titulo: 'Noticia 7',
-      descripcion: 'Descripción de la noticia 7.',
-      fuente: 'Fuente 7',
-      publicadaEl: DateTime.now().subtract(const Duration(days: 6)),
-    ),
-    Noticia(
-      titulo: 'Noticia 8',
-      descripcion: 'Descripción de la noticia 8.',
-      fuente: 'Fuente 8',
-      publicadaEl: DateTime.now().subtract(const Duration(days: 7)),
-    ),
-    Noticia(
-      titulo: 'Noticia 9',
-      descripcion: 'Descripción de la noticia 9.',
-      fuente: 'Fuente 9',
-      publicadaEl: DateTime.now().subtract(const Duration(days: 8)),
-    ),
-    Noticia(
-      titulo: 'Noticia 10',
-      descripcion: 'Descripción de la noticia 10.',
-      fuente: 'Fuente 10',
-      publicadaEl: DateTime.now().subtract(const Duration(days: 9)),
-    ),
-    Noticia(
-      titulo: 'Noticia 11',
-      descripcion: 'Descripción de la noticia 11.',
-      fuente: 'Fuente 11',
-      publicadaEl: DateTime.now().subtract(const Duration(days: 10)),
-    ),
-    Noticia(
-      titulo: 'Noticia 12',
-      descripcion: 'Descripción de la noticia 12.',
-      fuente: 'Fuente 12',
-      publicadaEl: DateTime.now().subtract(const Duration(days: 11)),
-    ),
-    Noticia(
-      titulo: 'Noticia 13',
-      descripcion: 'Descripción de la noticia 13.',
-      fuente: 'Fuente 13',
-      publicadaEl: DateTime.now().subtract(const Duration(days: 12)),
-    ),
-    Noticia(
-      titulo: 'Noticia 14',
-      descripcion: 'Descripción de la noticia 14.',
-      fuente: 'Fuente 14',
-      publicadaEl: DateTime.now().subtract(const Duration(days: 13)),
-    ),
-    Noticia(
-      titulo: 'Noticia 15',
-      descripcion: 'Descripción de la noticia 15.',
-      fuente: 'Fuente 15',
-      publicadaEl: DateTime.now().subtract(const Duration(days: 14)),
-    ),
-  ];
+  final Dio _dio = Dio();
 
-  final Random _random = Random();
+  // Método para obtener las primeras 10 noticias desde la API
+  Future<Map<String, dynamic>> fetchInitialNoticias() async {
+    try {
+      final url = Constants.newUrl;
+      final response = await _dio.get(url);
 
-  // Método para obtener noticias predefinidas
-  Future<List<Noticia>> fetchPredefinedNoticias() async {
-    // Simula un delay de 2 segundos
-    await Future.delayed(const Duration(seconds: 2));
-    return List.from(_noticias);
-  }
-
-  // Método para generar noticias aleatorias
-  Future<List<Noticia>> generateRandomNoticias(int count) async {
-    // Simula un delay de 2 segundos
-    await Future.delayed(const Duration(seconds: 2));
-
-    return List.generate(count, (_) {
-      final fuentes = [
-        'Fuente 1',
-        'Fuente 2',
-        'Fuente 3',
-        'Fuente 4',
-        'Fuente 5',
-        'Fuente 6',
-        'Fuente 7',
-        'Fuente 8',
-        'Fuente 9',
-        'Fuente 10',
-      ];
-
-      return Noticia(
-        titulo: 'Noticia Aleatoria ${_noticias.length + 1}',
-        descripcion: 'Descripción generada aleatoriamente.',
-        fuente: fuentes[_random.nextInt(fuentes.length)],
-        publicadaEl: DateTime.now().subtract(
-          Duration(days: _random.nextInt(30), 
-          hours: _random.nextInt(24), 
-          minutes: _random.nextInt(60)
-          ),
-        ),
-      );
-    });
-  }
-
-  // Método para obtener noticias paginadas
-  Future<List<Noticia>> fetchPaginatedNoticias(
-    int pageNumber, {
-    int pageSize = Constants.pageSize, // Tamaño de página por defecto
-  }) async {
-    // Simula un delay de 2 segundos
-    await Future.delayed(const Duration(seconds: 2));
-
-    // Genera nuevas noticias si no hay suficientes
-    while (_noticias.length < pageNumber * pageSize) {
-      _noticias.addAll(await generateRandomNoticias(pageSize));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        return {
+          'statusCode': response.statusCode,
+          'data': data.map((json) => Noticia.fromJson(json)).toList(),
+          'message': 'Noticias cargadas con éxito',
+        };
+      } else if (response.statusCode == 404) {
+        return {
+          'statusCode': response.statusCode,
+          'data': <Noticia>[],
+          'message': 'No se encontraron noticias',
+        };
+      } else if (response.statusCode != null &&
+          response.statusCode! >= 400 &&
+          response.statusCode! < 500) {
+        final errorMessage = response.data['message'] ?? 'Error de validación';
+        return {
+          'statusCode': response.statusCode,
+          'data': <Noticia>[],
+          'message': errorMessage,
+        };
+      } else if (response.statusCode != null && response.statusCode! >= 500) {
+        return {
+          'statusCode': response.statusCode,
+          'data': <Noticia>[],
+          'message': 'Error en el servidor',
+        };
+      } else {
+        return {
+          'statusCode': response.statusCode,
+          'data': <Noticia>[],
+          'message': 'Error desconocido',
+        };
+      }
+    } on DioException catch (e) {
+      String errorMessage;
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        errorMessage = 'Tiempo de espera agotado para la conexión';
+      } else if (e.type == DioExceptionType.connectionError) {
+        errorMessage = 'Error de conexión a internet';
+      } else {
+        errorMessage = 'Error al obtener noticias: ${e.message}';
+      }
+      return {
+        'statusCode': e.response?.statusCode,
+        'data': <Noticia>[],
+        'message': errorMessage,
+      };
+    } catch (e) {
+      return {
+        'statusCode': -1,
+        'data': <Noticia>[],
+        'message': 'Error al obtener noticias iniciales: $e',
+      };
     }
+  }
 
-    // Calcula los índices para la paginación
-    final startIndex = (pageNumber - 1) * pageSize;
-    final endIndex = startIndex + pageSize;
+  // Método para obtener noticias paginadas desde la API
+  Future<Map<String, dynamic>> fetchPaginatedNoticias(
+    int pageNumber, {
+    int pageSize = Constants.pageSize,
+  }) async {
+    try {
+      final url = Constants.newUrl;
+      final response = await _dio.get(url);
 
-    // Devuelve las noticias correspondientes a la página solicitada
-    return _noticias.sublist(
-      startIndex,
-      endIndex > _noticias.length ? _noticias.length : endIndex,
-    );
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        return {
+          'statusCode': response.statusCode,
+          'data': data.map((json) => Noticia.fromJson(json)).toList(),
+          'message': 'Noticias cargadas con éxito',
+        };
+      } else if (response.statusCode == 404) {
+        return {
+          'statusCode': response.statusCode,
+          'data': <Noticia>[],
+          'message': 'No se encontraron noticias',
+        };
+      } else if (response.statusCode != null &&
+          response.statusCode! >= 400 &&
+          response.statusCode! < 500) {
+        final errorMessage = response.data['message'] ?? 'Error de validación';
+        return {
+          'statusCode': response.statusCode,
+          'data': <Noticia>[],
+          'message': errorMessage,
+        };
+      } else if (response.statusCode != null && response.statusCode! >= 500) {
+        return {
+          'statusCode': response.statusCode,
+          'data': <Noticia>[],
+          'message': 'Error en el servidor',
+        };
+      } else {
+        return {
+          'statusCode': response.statusCode,
+          'data': <Noticia>[],
+          'message': 'Error desconocido',
+        };
+      }
+    } on DioException catch (e) {
+      String errorMessage;
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        errorMessage = 'Tiempo de espera agotado para la conexión';
+      } else if (e.type == DioExceptionType.connectionError) {
+        errorMessage = 'Error de conexión a internet';
+      } else {
+        errorMessage = 'Error al obtener noticias: ${e.message}';
+      }
+      return {
+        'statusCode': e.response?.statusCode,
+        'data': <Noticia>[],
+        'message': errorMessage,
+      };
+    } catch (e) {
+      return {
+        'statusCode': -1,
+        'data': <Noticia>[],
+        'message': 'Error al obtener noticias paginadas: $e',
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> crearNoticia(Noticia noticia) async {
+    try {
+      final url = Constants.newUrl;
+      final noticiaJson = {
+        'titulo': noticia.titulo,
+        'descripcion': noticia.descripcion,
+        'fuente': noticia.fuente,
+        'publicadaEl': noticia.publicadaEl.toIso8601String(),
+        'urlImagen': noticia.urlImagen,
+      };
+
+      final response = await _dio.post(url, data: noticiaJson);
+
+      if (response.statusCode == 201) {
+        return {
+          'statusCode': response.statusCode,
+          'success': true,
+          'message': 'Noticia creada con éxito',
+        };
+      } else if (response.statusCode == 400) {
+        final errorMessage = response.data['message'] ?? 'Error de validación';
+        return {
+          'statusCode': response.statusCode,
+          'success': false,
+          'message': errorMessage,
+        };
+      } else if (response.statusCode == 401) {
+        return {
+          'statusCode': response.statusCode,
+          'success': false,
+          'message': 'No autorizado para crear noticias',
+        };
+      } else if (response.statusCode == 500) {
+        return {
+          'statusCode': response.statusCode,
+          'success': false,
+          'message': 'Error interno del servidor',
+        };
+      } else {
+        return {
+          'statusCode': response.statusCode,
+          'success': false,
+          'message': 'Error al publicar la noticia',
+        };
+      }
+    } on DioException catch (e) {
+      String errorMessage;
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        errorMessage = 'Tiempo de espera agotado para la conexión';
+      } else if (e.type == DioExceptionType.connectionError) {
+        errorMessage = 'Error de conexión a internet';
+      } else {
+        errorMessage = 'Error al crear la noticia: ${e.message}';
+      }
+      return {
+        'statusCode': e.response?.statusCode,
+        'success': false,
+        'message': errorMessage,
+      };
+    } catch (e) {
+      return {
+        'statusCode': -1,
+        'success': false,
+        'message': 'Error al publicar la noticia: $e',
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> actualizarNoticia(
+    String id,
+    Noticia noticia,
+  ) async {
+    try {
+      final url = '${Constants.newUrl}/$id'; // URL para actualización con el ID
+      final noticiaJson = {
+        'titulo': noticia.titulo,
+        'descripcion': noticia.descripcion,
+        'fuente': noticia.fuente,
+        'publicadaEl': noticia.publicadaEl.toIso8601String(),
+        'urlImagen': noticia.urlImagen,
+      };
+
+      final response = await _dio.put(url, data: noticiaJson);
+
+      if (response.statusCode == 200) {
+        return {
+          'statusCode': response.statusCode,
+          'success': true,
+          'message': 'Noticia actualizada con éxito',
+        };
+      } else if (response.statusCode == 400) {
+        final errorMessage = response.data['message'] ?? 'Error de validación';
+        return {
+          'statusCode': response.statusCode,
+          'success': false,
+          'message': errorMessage,
+        };
+      } else if (response.statusCode == 404) {
+        return {
+          'statusCode': response.statusCode,
+          'success': false,
+          'message': 'Noticia no encontrada',
+        };
+      } else if (response.statusCode == 401) {
+        return {
+          'statusCode': response.statusCode,
+          'success': false,
+          'message': 'No autorizado para actualizar noticias',
+        };
+      } else if (response.statusCode == 500) {
+        return {
+          'statusCode': response.statusCode,
+          'success': false,
+          'message': 'Error interno del servidor',
+        };
+      } else {
+        return {
+          'statusCode': response.statusCode,
+          'success': false,
+          'message': 'Error al actualizar la noticia',
+        };
+      }
+    } on DioException catch (e) {
+      String errorMessage;
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        errorMessage = 'Tiempo de espera agotado para la conexión';
+      } else if (e.type == DioExceptionType.connectionError) {
+        errorMessage = 'Error de conexión a internet';
+      } else {
+        errorMessage = 'Error al actualizar la noticia: ${e.message}';
+      }
+      return {
+        'statusCode': e.response?.statusCode,
+        'success': false,
+        'message': errorMessage,
+      };
+    } catch (e) {
+      return {
+        'statusCode': -1,
+        'success': false,
+        'message': 'Error al actualizar la noticia: $e',
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> eliminarNoticia(String id) async {
+    try {
+      final url = '${Constants.newUrl}/$id'; // URL para eliminación con el ID
+      final response = await _dio.delete(url);
+
+      if (response.statusCode == 200) {
+        return {
+          'statusCode': response.statusCode,
+          'success': true,
+          'message': 'Noticia eliminada con éxito',
+        };
+      } else if (response.statusCode == 404) {
+        return {
+          'statusCode': response.statusCode,
+          'success': false,
+          'message': 'Noticia no encontrada',
+        };
+      } else if (response.statusCode == 401) {
+        return {
+          'statusCode': response.statusCode,
+          'success': false,
+          'message': 'No autorizado para eliminar noticia',
+        };
+      } else if (response.statusCode == 500) {
+        return {
+          'statusCode': response.statusCode,
+          'success': false,
+          'message': 'Error interno del servidor',
+        };
+      } else {
+        return {
+          'statusCode': response.statusCode,
+          'success': false,
+          'message': 'Error al eliminar la noticia',
+        };
+      }
+    } on DioException catch (e) {
+      String errorMessage;
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        errorMessage = 'Tiempo de espera agotado para la conexión';
+      } else if (e.type == DioExceptionType.connectionError) {
+        errorMessage = 'Error de conexión a internet';
+      } else {
+        errorMessage = 'Error al eliminar la noticia: ${e.message}';
+      }
+      return {
+        'statusCode': e.response?.statusCode,
+        'success': false,
+        'message': errorMessage,
+      };
+    } catch (e) {
+      return {
+        'statusCode': -1,
+        'success': false,
+        'message': 'Error al eliminar la noticia: $e',
+      };
+    }
   }
 }

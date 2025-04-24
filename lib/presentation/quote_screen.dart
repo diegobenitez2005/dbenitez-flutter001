@@ -15,7 +15,7 @@ class _QuoteScreenState extends State<QuoteScreen> {
   final QuoteService _quoteService = QuoteService();
   final ScrollController _scrollController = ScrollController();
 
-  List<Quote> _quotes = [];
+  final List<Quote> _quotes = [];
   int _currentPage = 1;
   bool _isLoading = false;
 
