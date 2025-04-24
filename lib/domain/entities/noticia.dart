@@ -1,15 +1,8 @@
-import 'package:flutter/widgets.dart';
 
 class Noticia {
-  final String id;
-  final String titulo;
-  final String descripcion;
-  final String fuente;
-  final DateTime publicadaEl;
-  final String urlImagen;
 
   Noticia({
-    required this.id,
+    this.id,
     required this.titulo,
     required this.descripcion,
     required this.fuente,
@@ -27,4 +20,10 @@ class Noticia {
       urlImagen: json['urlImagen'] ?? 'Sin imagen',
     );
   }
+  final String? id;
+  final String titulo;
+  final String descripcion;
+  final String fuente;
+  final DateTime publicadaEl;
+  final String urlImagen;
 }

@@ -39,7 +39,7 @@ class TarjetaDeportiva extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                  Text(task.title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 24,
                   color: Colors.black,
                   fontWeight: FontWeight.bold,

@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class Constants {
   static const listaVacia = 'No hay tareas';
   static const tituloAppbar = 'Mis Tareas';
@@ -27,5 +29,9 @@ class Constants {
   static const String listaVaciaNoticia = 'No hay noticias disponibles';
   static const String mensajeError = 'Error al cargar noticias';
   static const double espaciadoAlto = 10.0;
-  static const newUrl = 'https://crudcrud.com/api/3cc4f821fffa4ee381e907826a2061dc/noticias';
+  //static const newUrl =
+      //'https://crudcrud.com/api/3cc4f821fffa4ee381e907826a2061dc/noticias';
+  static const String apiKey = '3cc4f821fffa4ee381e907826a2061dc';
+  static String get newUrl => dotenv.env['NEW_URL'] ?? '';
+
 }

@@ -23,6 +23,13 @@ class _GameScreenState extends State<GameScreen> {
     questionsList = _questionService.getQuestions();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    print ('Estoy eliminando esta pantalla');
+    super.dispose();
+  }
+
   void _handleAnswer(int selectedIndex) {
     // Llama al método isCorrect desde el servicio
     final isCorrect = _questionService.isCorrect(

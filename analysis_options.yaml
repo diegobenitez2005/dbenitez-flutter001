@@ -26,6 +26,8 @@ linter:
     prefer_const_constructors: true  # Uncomment to enable the `prefer_const_constructors` rule
     sort_constructors_first: true  # Uncomment to enable the `sort_constructors_first` rule
     constant_identifier_names: true
-    always_use_package_imports: true  # Uncomment to enable the `always_use_package_imports` rule
+    always_use_package_imports: true 
+    always_declare_return_types: true
+ # Uncomment to enable the `always_use_package_imports` rule
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

@@ -20,8 +20,9 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
   bool _isLoading = false;
   bool _hasError = false;
   int _paginaActual = 1;
-  bool ordenarPorFecha = true;
-  bool ordenarPorFuente = false;
+  String _mensajeError = '';
+  DateTime? _ultimaActualizacion;
+
   @override
   void initState() {
     super.initState();
@@ -42,22 +43,39 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
     setState(() {
       _isLoading = true;
       _hasError = false;
+      _mensajeError = '';
     });
 
-    try {
-      final noticias = await _noticiaService.obtenerNoticiasIniciales();
-      ordenarPorFecha;
-      ordenarPorFuente;
-      setState(() {
-        _noticias = noticias;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
+    final noticias = await _noticiaService.obtenerNoticiasIniciales(
+      ordenarPorFecha: ordenarPorFecha,
+      ordenarPorFuente: ordenarPorFuente,
+    );
+
+    setState(() {
+      _noticias = noticias;
+      _isLoading = false;
+      _ultimaActualizacion = DateTime.now();
+
+      if (_noticiaService.hasError) {
         _hasError = true;
-        _isLoading = false;
-      });
-    }
+        _mensajeError = _noticiaService.lastErrorMessage;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_mensajeError),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
+            action: SnackBarAction(
+              label: 'OK',
+              textColor: Colors.white,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          ),
+        );
+      }
+    });
   }
 
   void _scrollListener() {
@@ -73,39 +91,66 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
       _isLoading = true;
     });
 
-    try {
-      _paginaActual++;
-      final nuevasNoticias = await _noticiaService.obtenerNoticiasPaginadas(
-        _paginaActual,
-        ordenarPorFecha: ordenarPorFecha,
-        ordenarPorFuente: ordenarPorFuente,
-      );
+    _paginaActual++;
+    final nuevasNoticias = await _noticiaService.obtenerNoticiasPaginadas(
+      _paginaActual,
+    );
 
-      setState(() {
+    setState(() {
+      _isLoading = false;
+
+      if (_noticiaService.hasError) {
+        _mensajeError = _noticiaService.lastErrorMessage;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_mensajeError),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
+            action: SnackBarAction(
+              label: 'Reintentar',
+              textColor: Colors.white,
+              onPressed: () {
+                _cargarMasNoticias();
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          ),
+        );
+      } else {
         _noticias.addAll(nuevasNoticias);
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _hasError = true;
-        _isLoading = false;
-      });
-    }
+      }
+    });
   }
 
-  void _showAddNoticiaForm(BuildContext context) {
+  void _showAddNoticiaForm(BuildContext context, {Noticia? noticiaParaEditar}) {
+    final bool esEdicion = noticiaParaEditar != null;
     final formKey = GlobalKey<FormState>();
-    final TextEditingController tituloController = TextEditingController();
-    final TextEditingController descripcionController = TextEditingController();
-    final TextEditingController fuenteController = TextEditingController();
-    final TextEditingController fechaController = TextEditingController();
-    final TextEditingController imagenUrlController = TextEditingController();
+
+    final TextEditingController tituloController = TextEditingController(
+      text: esEdicion ? noticiaParaEditar.titulo : '',
+    );
+    final TextEditingController descripcionController = TextEditingController(
+      text: esEdicion ? noticiaParaEditar.descripcion : '',
+    );
+    final TextEditingController fuenteController = TextEditingController(
+      text: esEdicion ? noticiaParaEditar.fuente : '',
+    );
+    final TextEditingController fechaController = TextEditingController(
+      text:
+          esEdicion
+              ? '${noticiaParaEditar.publicadaEl.day.toString().padLeft(2, '0')}/${noticiaParaEditar.publicadaEl.month.toString().padLeft(2, '0')}/${noticiaParaEditar.publicadaEl.year}'
+              : '',
+    );
+    final TextEditingController imagenUrlController = TextEditingController(
+      text: esEdicion ? noticiaParaEditar.urlImagen : '',
+    );
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Agregar Noticia'),
+          title: Text(esEdicion ? 'Editar Noticia' : 'Agregar Noticia'),
           content: SingleChildScrollView(
             child: Form(
               key: formKey,
@@ -166,45 +211,111 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Cerrar el diálogo
+                Navigator.pop(context);
               },
               child: const Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  final nuevaNoticia = Noticia(
-                    id: DateTime.now().toIso8601String(),
-                    titulo: tituloController.text,
-                    descripcion: descripcionController.text,
-                    fuente: fuenteController.text,
-                    publicadaEl: convertirFecha(fechaController.text),
-                    urlImagen:
-                        imagenUrlController.text.isNotEmpty
-                            ? imagenUrlController.text
-                            : '',
-                  );
-
-                  try {
-                    await _noticiaService.crearNoticia(nuevaNoticia);
-
-                    setState(() {
-                      _noticias.insert(
-                        0,
-                        nuevaNoticia,
-                      ); // Agregar al inicio de la lista
-                    });
-
-                    Navigator.pop(context); // Cerrar el diálogo
-                  } catch (e) {
-                    debugPrint('Error al crear noticia: $e');
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error al crear noticia: $e')),
+                  if (esEdicion) {
+                    final noticiaActualizada = Noticia(
+                      id: noticiaParaEditar.id,
+                      titulo: tituloController.text,
+                      descripcion: descripcionController.text,
+                      fuente: fuenteController.text,
+                      publicadaEl: convertirFecha(fechaController.text),
+                      urlImagen:
+                          imagenUrlController.text.isNotEmpty
+                              ? imagenUrlController.text
+                              : '',
                     );
+
+                    final exito = await _noticiaService.actualizarNoticia(
+                      noticiaActualizada,
+                    );
+
+                    if (exito) {
+                      setState(() {
+                        final index = _noticias.indexWhere(
+                          (n) => n.id == noticiaActualizada.id,
+                        );
+                        if (index >= 0) {
+                          _noticias[index] = noticiaActualizada;
+                        }
+                      });
+
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Noticia actualizada exitosamente'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder:
+                            (context) => AlertDialog(
+                              title: const Text('Error'),
+                              content: Text(_noticiaService.lastErrorMessage),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                      );
+                    }
+                  } else {
+                    final nuevaNoticia = Noticia(
+                      titulo: tituloController.text,
+                      descripcion: descripcionController.text,
+                      fuente: fuenteController.text,
+                      publicadaEl: convertirFecha(fechaController.text),
+                      urlImagen:
+                          imagenUrlController.text.isNotEmpty
+                              ? imagenUrlController.text
+                              : '',
+                    );
+
+                    final success = await _noticiaService.crearNoticia(
+                      nuevaNoticia,
+                    );
+
+                    if (success) {
+                      setState(() {
+                        _noticias.insert(0, nuevaNoticia);
+                      });
+
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Noticia creada exitosamente'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder:
+                            (context) => AlertDialog(
+                              title: const Text('Error'),
+                              content: Text(_noticiaService.lastErrorMessage),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                      );
+                    }
                   }
                 }
               },
-              child: const Text('Agregar'),
+              child: Text(esEdicion ? 'Actualizar' : 'Agregar'),
             ),
           ],
         );
@@ -231,12 +342,12 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
     }
 
     try {
-      DateTime(anio, mes, dia); // Verifica si la fecha es válida
+      DateTime(anio, mes, dia);
     } catch (e) {
       return 'La fecha no es válida';
     }
 
-    return null; // La fecha es válida
+    return null;
   }
 
   DateTime convertirFecha(String value) {
@@ -247,21 +358,65 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
     return DateTime(anio, mes, dia);
   }
 
-   Future<void> _alternarOrden() async {
-    if (ordenarPorFecha) {
-      // Cambiar a ordenar por fuente
-      await _cargarNoticiasIniciales(ordenarPorFuente: true);
-      setState(() {
-        ordenarPorFecha = false;
-        ordenarPorFuente = true;
-      });
-    } else if (ordenarPorFuente) {
-      // Cambiar a ordenar por fecha
-      await _cargarNoticiasIniciales(ordenarPorFecha: true);
-      setState(() {
-        ordenarPorFecha = true;
-        ordenarPorFuente = false;
-      });
+  Future<void> _confirmarYEliminarNoticia(Noticia noticia) async {
+    // Mostrar diálogo de confirmación
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Confirmar eliminación'),
+            content: const Text(
+              '¿Está seguro que desea eliminar esta noticia?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text(
+                  'Eliminar',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          ),
+    );
+
+    // Si el usuario confirmó, proceder con la eliminación
+    if (confirmar == true) {
+      if (noticia.id == null || noticia.id!.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No se puede eliminar - ID no disponible'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      final exito = await _noticiaService.eliminarNoticia(noticia.id!);
+
+      if (exito) {
+        setState(() {
+          _noticias.removeWhere((n) => n.id == noticia.id);
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Noticia eliminada exitosamente'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_noticiaService.lastErrorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -272,11 +427,9 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
         appBar: AppBar(
           title: CommonWidgetsHelper.buildBoldTitle(Constants.tituloApp),
           backgroundColor: Colors.pinkAccent,
-          iconTheme: const IconThemeData(
-            color: Colors.white, // Cambia el color de la flecha a blanco
-          ),
+          iconTheme: const IconThemeData(color: Colors.white),
         ),
-        body: const Center(child: Text('Cargando noticias...')),
+        body: const Center(child: Text(Constants.mensajeCargando)),
       );
     }
 
@@ -285,13 +438,11 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
         appBar: AppBar(
           title: CommonWidgetsHelper.buildBoldTitle(Constants.tituloApp),
           backgroundColor: Colors.black87,
-          iconTheme: const IconThemeData(
-            color: Colors.white, // Cambia el color de la flecha a blanco
-          ),
+          iconTheme: const IconThemeData(color: Colors.white),
         ),
         body: const Center(
           child: Text(
-            'Ocurrió un error al cargar las noticias. Inténtalo de nuevo.',
+            Constants.mensajeError,
             style: TextStyle(color: Colors.red),
           ),
         ),
@@ -303,11 +454,9 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
         appBar: AppBar(
           title: CommonWidgetsHelper.buildBoldTitle(Constants.tituloApp),
           backgroundColor: Colors.black87,
-          iconTheme: const IconThemeData(
-            color: Colors.white, // Cambia el color de la flecha a blanco
-          ),
+          iconTheme: const IconThemeData(color: Colors.white),
         ),
-        body: const Center(child: Text('No hay noticias disponibles.')),
+        body: const Center(child: Text(Constants.listaVaciaNoticia)),
       );
     }
 
@@ -315,27 +464,35 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        title: CommonWidgetsHelper.buildBoldTitle(Constants.tituloApp),
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CommonWidgetsHelper.buildBoldTitle(Constants.tituloApp),
+            if (_ultimaActualizacion != null)
+              Text(
+                'Última actualización: ${DateFormat('dd/MM/yyyy HH:mm').format(_ultimaActualizacion!)}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.white70,
+                ),
+              ),
+          ],
+        ),
         backgroundColor: Colors.black87,
-        iconTheme: const IconThemeData(
-          color: Colors.white, // Cambia el color de la flecha a blanco
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
-        IconButton(
-          icon: Icon(
-            ordenarPorFecha ? Icons.calendar_today : Icons.sort_by_alpha,
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () => _cargarNoticiasIniciales(),
+            tooltip: 'Actualizar noticias',
           ),
-          tooltip: ordenarPorFecha
-              ? 'Ordenar por Fecha'
-              : 'Ordenar por Fuente',
-          onPressed: _alternarOrden,
-        ),
-      ],
+        ],
       ),
       body: ListView.builder(
         controller: _scrollController,
         itemCount: _noticias.length + (_isLoading ? 1 : 0),
-        padding: EdgeInsets.zero, // Elimina cualquier padding del ListView
+        padding: EdgeInsets.zero,
         itemBuilder: (context, index) {
           if (index == _noticias.length) {
             return const Center(
@@ -350,26 +507,20 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
           return Column(
             children: [
               Card(
-                margin: EdgeInsets.zero, // Elimina el margen entre los cards
+                margin: EdgeInsets.zero,
                 shape: const RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.zero, // Sin bordes redondeados en el Card
+                  borderRadius: BorderRadius.zero,
                 ),
-                color: Colors.grey[200], // Fondo blanco para cada elemento
+                color: Colors.grey[200],
                 child: Padding(
-                  padding: const EdgeInsets.all(
-                    7.0,
-                  ), // Padding interno dentro del Card
+                  padding: const EdgeInsets.all(7.0),
                   child: Column(
-                    mainAxisSize:
-                        MainAxisSize
-                            .min, // Evita que el Column ocupe espacio adicional
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Contenido de la noticia
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -389,7 +540,6 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-
                                 const SizedBox(height: 8.0),
                                 Text(
                                   'Publicado el ${DateFormat('dd/MM/yyyy HH:mm').format(noticia.publicadaEl)} • ${noticia.fuente}',
@@ -402,28 +552,21 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
                             ),
                           ),
                           const SizedBox(width: 12.0),
-                          // Imagen de Picsum
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                              18.0,
-                            ), // Bordes redondeados
+                            borderRadius: BorderRadius.circular(18.0),
                             child: Image.network(
                               noticia.urlImagen,
                               width: 100.0,
                               height: 100.0,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
-                                return const Icon(
-                                  Icons.error,
-                                ); // Icono de error
+                                return const Icon(Icons.error);
                               },
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 8.0,
-                      ), // Espaciado entre la imagen y el Row
+                      const SizedBox(height: 8.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -441,10 +584,28 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
                           ),
                           IconButton(
                             icon: const Icon(Icons.more_vert),
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
                             onPressed: () {
-                              // Acción para más opciones
+                              _showAddNoticiaForm(context,
+                                  noticiaParaEditar: noticia);
                             },
                           ),
+                          
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              _confirmarYEliminarNoticia(noticia);
+                            },
+                          ),
+                          
                         ],
                       ),
                     ],
@@ -452,11 +613,9 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
                 ),
               ),
               const Divider(
-                thickness: 1.5, // Grosor de la línea
-                color: Color.fromARGB(255, 207, 206, 206), // Color de la línea
-                height: 1.5, // Altura total ocupada por el Divider
-                //indent: 20.0, // Espaciado desde el lado izquierdo
-                //endIndent: 20.0, // Espaciado desde el lado derecho
+                thickness: 1.5,
+                color: Color.fromARGB(255, 207, 206, 206),
+                height: 1.5,
               ),
             ],
           );
