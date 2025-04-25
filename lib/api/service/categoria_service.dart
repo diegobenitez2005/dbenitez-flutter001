@@ -3,13 +3,15 @@ import 'package:diego/domain/entities/categoria.dart';
 import 'package:dio/dio.dart';
 import 'package:diego/exceptions/api_exceptions.dart';
 
-class CategoriaRepository {
-
-  CategoriaRepository() : _dio = Dio() {
+class CategoriaService {
+  CategoriaService() : _dio = Dio() {
     // Configurar tiempo máximo de espera para todas las peticiones
-    _dio.options.connectTimeout =  Duration(milliseconds: Constants.timeOutSeconds * 1000);
-    _dio.options.receiveTimeout =  Duration(milliseconds: Constants.timeOutSeconds * 1000);
-    
+    _dio.options.connectTimeout = Duration(
+      milliseconds: Constants.timeOutSeconds * 1000,
+    );
+    _dio.options.receiveTimeout = Duration(
+      milliseconds: Constants.timeOutSeconds * 1000,
+    );
   }
   final Dio _dio;
 

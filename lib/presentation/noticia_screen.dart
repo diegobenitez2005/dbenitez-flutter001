@@ -2,7 +2,7 @@ import 'package:diego/constants/constants.dart';
 import 'package:diego/helpers/common_widgets_herlpers.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:diego/api/service/noticia_service.dart';
+import 'package:diego/data/repositories/noticia_repository.dart';
 import 'package:diego/domain/entities/noticia.dart';
 import 'package:diego/presentation/categorias_screen.dart';
 
@@ -14,7 +14,7 @@ class NoticiaScreen extends StatefulWidget {
 }
 
 class _NoticiaScreenState extends State<NoticiaScreen> {
-  final NoticiaService _noticiaService = NoticiaService();
+  final NoticiaRepository _noticiaService = NoticiaRepository();
   final ScrollController _scrollController = ScrollController();
 
   List<Noticia> _noticias = [];

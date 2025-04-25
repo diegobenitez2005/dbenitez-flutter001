@@ -1,15 +1,15 @@
+import 'package:diego/api/service/categoria_service.dart';
 import 'package:diego/constants/constants.dart';
-import 'package:diego/data/repositories/categoria_repository.dart';
 import 'package:diego/domain/entities/categoria.dart';
 import 'package:diego/exceptions/api_exceptions.dart';
 
-class CategoriaService {
-  final CategoriaRepository _repository = CategoriaRepository();
+class CategoriaRepository {
+  final CategoriaService _categoriaService = CategoriaService();
 
   /// Obtiene todas las categorías desde el repositorio
   Future<List<Categoria>> getCategorias() async {
     try {
-      return await _repository.getCategorias();
+      return await _categoriaService.getCategorias();
     } catch (e) {
       if (e is ApiException) {
         // Verificar si es un error de timeout específicamente
@@ -27,7 +27,7 @@ class CategoriaService {
   /// Crea una nueva categoría
   Future<void> crearCategoria(Categoria categoria) async {
     try {
-      await _repository.crearCategoria(categoria.toJson());
+      await _categoriaService.crearCategoria(categoria.toJson());
     } catch (e) {
       if (e is ApiException) {
         // Verificar si es un error de timeout específicamente
@@ -48,7 +48,7 @@ class CategoriaService {
       if (id == null) {
         throw Exception('El ID no puede ser nulo');
       }
-      await _repository.editarCategoria(id, categoria.toJson());
+      await _categoriaService.editarCategoria(id, categoria.toJson());
     } catch (e) {
       if (e is ApiException) {
         // Verificar si es un error de timeout específicamente
@@ -71,7 +71,7 @@ class CategoriaService {
         throw Exception('El ID de la categoría no puede ser nulo o vacío');
       }
 
-      await _repository.eliminarCategoria(id);
+      await _categoriaService.eliminarCategoria(id);
     } catch (e) {
       if (e is ApiException) {
         // Verificar si es un error de timeout específicamente
