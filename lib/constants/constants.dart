@@ -29,9 +29,15 @@ class Constants {
   static const String listaVaciaNoticia = 'No hay noticias disponibles';
   static const String mensajeError = 'Error al cargar noticias';
   static const double espaciadoAlto = 10.0;
-  //static const newUrl =
-      //'https://crudcrud.com/api/3cc4f821fffa4ee381e907826a2061dc/noticias';
-  static const String apiKey = '3cc4f821fffa4ee381e907826a2061dc';
   static String get newUrl => dotenv.env['NEW_URL'] ?? '';
+  static String  get urlNoticias => '$newUrl/noticias';
+  static String get urlCategorias => '$newUrl/categorias'; 
+  static String defaultCategoriaId = 'Sin categoría'; 
+  static int timeOutSeconds = 10; // Tiempo de espera para las peticiones HTTP
+  static String messageError = 'Error al cargar las categorías';
+  static String messageErrorTimeout = 'Tiempo de espera agotado';
+  static const String errorUnauthorized = 'No autorizado';
+  static const String errorNotFound = 'Noticias no encontradas';
+  static const String errorServer = 'Error del servidor';
 
 }

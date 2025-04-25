@@ -1,6 +1,8 @@
 import 'package:diego/constants/constants.dart';
 import 'package:diego/data/repositories/noticia_repository.dart';
 import 'package:diego/domain/entities/noticia.dart';
+import 'package:diego/exceptions/api_exceptions.dart';
+import 'package:diego/helpers/error_helper.dart';
 import 'package:flutter/material.dart';
 
 class NoticiaService {
@@ -14,82 +16,76 @@ class NoticiaService {
   int? get lastStatusCode => _lastStatusCode;
   bool get hasError => _hasError;
 
-  // Método para obtener las primeras 10 noticias desde la API
-  Future<List<Noticia>> obtenerNoticiasIniciales({
-    bool ordenarPorFecha = false,
-    bool ordenarPorFuente = false,
-  }) async {
+  // Método para obtener el mensaje de error y color según el código de estado
+  Map<String, dynamic> getErrorInfo() {
+    return ErrorHelper.getErrorMessageAndColor(_lastStatusCode);
+  }
+
+  // Método para obtener las primeras noticias desde la API
+  Future<List<Noticia>> obtenerNoticiasIniciales(
+   
+  ) async {
     // Reiniciar estado de error
     _clearError();
 
-    final response = await _noticiaRepository.fetchInitialNoticias();
-    final int statusCode = response['statusCode'] ?? -1;
-    final String message = response['message'] ?? 'Error desconocido';
-    final List<Noticia> noticias = response['data'] ?? [];
-
-    // Verificar si hay error basado en el statusCode
-    if (statusCode < 200 || statusCode >= 300) {
-      _setError(message, statusCode);
-      return [];
-    }
-
-    // Validar noticias (podría lanzar excepciones)
     try {
-      _validarListaNoticias(noticias);
+      final noticias = await _noticiaRepository.fetchInitialNoticias();
+
+      // Ordenar según los parámetros
+
+      return noticias;
+    } on ApiException catch (e) {
+      // Verificar si es un error de timeout específicamente
+      if (e.statusCode == 408) {
+        _setError(Constants.messageErrorTimeout, e.statusCode);
+      } else {
+        _setError(e.message, e.statusCode);
+      }
+      return [];
     } catch (e) {
-      _setError('Error de validación: $e', 422);
+      _setError('Error inesperado: $e', null);
       return [];
     }
-
-    // Ordenar noticias si es necesario
-    
-
-    return noticias;
   }
 
   // Método para obtener noticias paginadas desde la API
   Future<List<Noticia>> obtenerNoticiasPaginadas(
     int numeroPagina, {
     int tamanoPagina = Constants.pageSize,
-    
   }) async {
+    // Reiniciar estado de error
+    _clearError();
+
     // Validar parámetros
     if (numeroPagina < 1) {
       _setError('El número de página debe ser mayor o igual a 1.', 400);
       return [];
     }
+
     if (tamanoPagina <= 0) {
       _setError('El tamaño de página debe ser mayor que 0.', 400);
       return [];
     }
 
-    // Reiniciar estado de error
-    _clearError();
-
-    final response = await _noticiaRepository.fetchPaginatedNoticias(
-      numeroPagina,
-      pageSize: tamanoPagina,
-    );
-    final int statusCode = response['statusCode'] ?? -1;
-    final String message = response['message'] ?? 'Error desconocido';
-    final List<Noticia> noticias = response['data'] ?? [];
-
-    // Verificar si hay error basado en el statusCode
-    if (statusCode < 200 || statusCode >= 300) {
-      _setError(message, statusCode);
-      return [];
-    }
-
-    // Validar noticias (podría lanzar excepciones)
     try {
-      _validarListaNoticias(noticias);
+      final noticias = await _noticiaRepository.fetchPaginatedNoticias(
+        numeroPagina,
+        pageSize: tamanoPagina,
+      );
+
+      return noticias;
+    } on ApiException catch (e) {
+      // Verificar si es un error de timeout específicamente
+      if (e.statusCode == 408) {
+        _setError(Constants.messageErrorTimeout, e.statusCode);
+      } else {
+        _setError(e.message, e.statusCode);
+      }
+      return [];
     } catch (e) {
-      _setError('Error de validación: $e', 422);
+      _setError('Error inesperado: $e', null);
       return [];
     }
-
-
-    return noticias;
   }
 
   // Método para crear una noticia
@@ -98,65 +94,27 @@ class NoticiaService {
     _clearError();
 
     try {
+      // Validar datos de la noticia
       _validarNoticia(noticia);
+
+      // Llamar al repositorio para crear la noticia
+      await _noticiaRepository.crearNoticia(noticia);
+      return true;
+    } on ApiException catch (e) {
+      // Verificar si es un error de timeout específicamente
+      if (e.statusCode == 408) {
+        _setError(Constants.messageErrorTimeout, e.statusCode);
+      } else {
+        _setError(e.message, e.statusCode);
+      }
+      return false;
     } catch (e) {
-      _setError('Error de validación: $e', 422);
+      _setError('Error inesperado: $e', null);
       return false;
     }
-
-    final response = await _noticiaRepository.crearNoticia(noticia);
-    final int statusCode = response['statusCode'] ?? -1;
-    final String message = response['message'] ?? 'Error desconocido';
-    final bool success = response['success'] ?? false;
-
-    if (!success) {
-      _setError(message, statusCode);
-      return false;
-    }
-
-    return true;
   }
 
-  // Método privado para validar una lista de noticias
-  void _validarListaNoticias(List<Noticia> noticias) {
-    for (final noticia in noticias) {
-      _validarNoticia(noticia);
-    }
-  }
-
-  // Método privado para validar una noticia individual
-  void _validarNoticia(Noticia noticia) {
-    if (noticia.titulo.isEmpty) {
-      throw ArgumentError('El título de la noticia no puede estar vacío.');
-    }
-    if (noticia.descripcion.isEmpty) {
-      throw ArgumentError('La descripción de la noticia no puede estar vacía.');
-    }
-    if (noticia.fuente.isEmpty) {
-      throw ArgumentError('La fuente de la noticia no puede estar vacía.');
-    }
-    if (noticia.publicadaEl.isAfter(DateTime.now())) {
-      throw ArgumentError(
-        'La fecha de publicación no puede estar en el futuro.',
-      );
-    }
-  }
-
-  // Método para establecer un error
-  void _setError(String message, int? statusCode) {
-    _hasError = true;
-    _lastErrorMessage = message;
-    _lastStatusCode = statusCode;
-    debugPrint('Error: $message ($statusCode)');
-  }
-
-  // Método para limpiar el estado de error
-  void _clearError() {
-    _hasError = false;
-    _lastErrorMessage = '';
-    _lastStatusCode = null;
-  }
-  // Añadir este método a la clase NoticiaService
+  // Método para actualizar una noticia existente
   Future<bool> actualizarNoticia(Noticia noticia) async {
     // Reiniciar estado de error
     _clearError();
@@ -170,25 +128,25 @@ class NoticiaService {
     try {
       // Validar datos de la noticia
       _validarNoticia(noticia);
+
+      // Llamar al repositorio para actualizar la noticia
+      await _noticiaRepository.actualizarNoticia(noticia.id!, noticia);
+      return true;
+    } on ApiException catch (e) {
+      // Verificar si es un error de timeout específicamente
+      if (e.statusCode == 408) {
+        _setError(Constants.messageErrorTimeout, e.statusCode);
+      } else {
+        _setError(e.message, e.statusCode);
+      }
+      return false;
     } catch (e) {
-      _setError('Error de validación: $e', 422);
+      _setError('Error inesperado: $e', null);
       return false;
     }
-
-    // Llamar al repositorio para actualizar la noticia
-    final response = await _noticiaRepository.actualizarNoticia(noticia.id!, noticia);
-    final int statusCode = response['statusCode'] ?? -1;
-    final String message = response['message'] ?? 'Error desconocido';
-    final bool success = response['success'] ?? false;
-
-    if (!success) {
-      _setError(message, statusCode);
-      return false;
-    }
-
-    return true;
   }
-  // Añadir este método a la clase NoticiaService
+
+  // Método para eliminar una noticia
   Future<bool> eliminarNoticia(String id) async {
     // Reiniciar estado de error
     _clearError();
@@ -197,19 +155,66 @@ class NoticiaService {
     if (id.isEmpty) {
       _setError('No se puede eliminar una noticia sin ID', 400);
       return false;
-    } 
-
-    // Llamar al repositorio para eliminar la noticia
-    final response = await _noticiaRepository.eliminarNoticia(id);
-    final int statusCode = response['statusCode'] ?? -1;
-    final String message = response['message'] ?? 'Error desconocido';
-    final bool success = response['success'] ?? false;
-
-    if (!success) {
-      _setError(message, statusCode);
-      return false;
     }
 
-    return true;
+    try {
+      // Llamar al repositorio para eliminar la noticia
+      await _noticiaRepository.eliminarNoticia(id);
+      return true;
+    } on ApiException catch (e) {
+      // Verificar si es un error de timeout específicamente
+      if (e.statusCode == 408) {
+        _setError(Constants.messageErrorTimeout, e.statusCode);
+      } else {
+        _setError(e.message, e.statusCode);
+      }
+      return false;
+    } catch (e) {
+      _setError('Error inesperado: $e', null);
+      return false;
+    }
+  }
+
+  // Método privado para validar una noticia
+  void _validarNoticia(Noticia noticia) {
+    if (noticia.titulo.isEmpty) {
+      throw ApiException(
+        'El título de la noticia no puede estar vacío.',
+        statusCode: 400,
+      );
+    }
+    if (noticia.descripcion.isEmpty) {
+      throw ApiException(
+        'La descripción de la noticia no puede estar vacía.',
+        statusCode: 400,
+      );
+    }
+    if (noticia.fuente.isEmpty) {
+      throw ApiException(
+        'La fuente de la noticia no puede estar vacía.',
+        statusCode: 400,
+      );
+    }
+    if (noticia.publicadaEl.isAfter(DateTime.now())) {
+      throw ApiException(
+        'La fecha de publicación no puede estar en el futuro.',
+        statusCode: 400,
+      );
+    }
+  }
+
+  // Método para establecer un error
+  void _setError(String message, int? statusCode) {
+    _hasError = true;
+    _lastErrorMessage = message;
+    _lastStatusCode = statusCode;
+    debugPrint('Error: $message (Código: $statusCode)');
+  }
+
+  // Método para limpiar el estado de error
+  void _clearError() {
+    _hasError = false;
+    _lastErrorMessage = '';
+    _lastStatusCode = null;
   }
 }
