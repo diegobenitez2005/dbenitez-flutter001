@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:diego/api/service/noticia_service.dart';
 import 'package:diego/domain/entities/noticia.dart';
+import 'package:diego/presentation/categorias_screen.dart';
 
 class NoticiaScreen extends StatefulWidget {
   const NoticiaScreen({super.key});
@@ -36,20 +37,14 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
     super.dispose();
   }
 
-  Future<void> _cargarNoticiasIniciales({
-    bool ordenarPorFecha = true,
-    bool ordenarPorFuente = false,
-  }) async {
+  Future<void> _cargarNoticiasIniciales() async {
     setState(() {
       _isLoading = true;
       _hasError = false;
       _mensajeError = '';
     });
 
-    final noticias = await _noticiaService.obtenerNoticiasIniciales(
-      ordenarPorFecha: ordenarPorFecha,
-      ordenarPorFuente: ordenarPorFuente,
-    );
+    final noticias = await _noticiaService.obtenerNoticiasIniciales();
 
     setState(() {
       _noticias = noticias;
@@ -60,18 +55,15 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
         _hasError = true;
         _mensajeError = _noticiaService.lastErrorMessage;
 
+        final errorInfo = _noticiaService.getErrorInfo();
+        final errorMessage = errorInfo['message'];
+        final errorColor = errorInfo['color'];
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_mensajeError),
-            backgroundColor: Colors.red,
+            content: Text(errorMessage ?? _noticiaService.lastErrorMessage),
+            backgroundColor: errorColor,
             duration: const Duration(seconds: 5),
-            action: SnackBarAction(
-              label: 'OK',
-              textColor: Colors.white,
-              onPressed: () {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              },
-            ),
           ),
         );
       }
@@ -102,10 +94,14 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
       if (_noticiaService.hasError) {
         _mensajeError = _noticiaService.lastErrorMessage;
 
+        final errorInfo = _noticiaService.getErrorInfo();
+        final errorMessage = errorInfo['message'];
+        final errorColor = errorInfo['color'];
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_mensajeError),
-            backgroundColor: Colors.red,
+            content: Text(errorMessage ?? _noticiaService.lastErrorMessage),
+            backgroundColor: errorColor,
             duration: const Duration(seconds: 5),
             action: SnackBarAction(
               label: 'Reintentar',
@@ -229,6 +225,7 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
                           imagenUrlController.text.isNotEmpty
                               ? imagenUrlController.text
                               : '',
+                      categoriaId: noticiaParaEditar.categoriaId,
                     );
 
                     final exito = await _noticiaService.actualizarNoticia(
@@ -253,12 +250,22 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
                         ),
                       );
                     } else {
+                      final errorInfo = _noticiaService.getErrorInfo();
+                      final errorMessage = errorInfo['message'];
+                      final errorColor = errorInfo['color'];
+
                       showDialog(
                         context: context,
                         builder:
                             (context) => AlertDialog(
-                              title: const Text('Error'),
-                              content: Text(_noticiaService.lastErrorMessage),
+                              title: Text(
+                                'Error',
+                                style: TextStyle(color: errorColor),
+                              ),
+                              content: Text(
+                                errorMessage ??
+                                    _noticiaService.lastErrorMessage,
+                              ),
                               actions: [
                                 TextButton(
                                   onPressed: () => Navigator.pop(context),
@@ -278,6 +285,8 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
                           imagenUrlController.text.isNotEmpty
                               ? imagenUrlController.text
                               : '',
+                      categoriaId:
+                          '', // Asignar un ID de categoría si es necesario
                     );
 
                     final success = await _noticiaService.crearNoticia(
@@ -297,12 +306,22 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
                         ),
                       );
                     } else {
+                      final errorInfo = _noticiaService.getErrorInfo();
+                      final errorMessage = errorInfo['message'];
+                      final errorColor = errorInfo['color'];
+
                       showDialog(
                         context: context,
                         builder:
                             (context) => AlertDialog(
-                              title: const Text('Error'),
-                              content: Text(_noticiaService.lastErrorMessage),
+                              title: Text(
+                                'Error',
+                                style: TextStyle(color: errorColor),
+                              ),
+                              content: Text(
+                                errorMessage ??
+                                    _noticiaService.lastErrorMessage,
+                              ),
                               actions: [
                                 TextButton(
                                   onPressed: () => Navigator.pop(context),
@@ -410,10 +429,15 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
           ),
         );
       } else {
+        final errorInfo = _noticiaService.getErrorInfo();
+        final errorMessage = errorInfo['message'];
+        final errorColor = errorInfo['color'];
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_noticiaService.lastErrorMessage),
-            backgroundColor: Colors.red,
+            content: Text(errorMessage ?? _noticiaService.lastErrorMessage),
+            backgroundColor: errorColor,
+            duration: const Duration(seconds: 5),
           ),
         );
       }
@@ -483,9 +507,16 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => _cargarNoticiasIniciales(),
-            tooltip: 'Actualizar noticias',
+            icon: const Icon(Icons.category),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CategoriaScreen(),
+                ),
+              );
+            },
+            tooltip: 'Gestionar categorías',
           ),
         ],
       ),
@@ -548,6 +579,14 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
                                     fontSize: 10.0,
                                   ),
                                 ),
+                                const SizedBox(height: 4.0),
+                                Text(
+                                  'Categoría: ${noticia.categoriaId == Constants.defaultCategoriaId ? 'Sin categoría' : noticia.categoriaId}',
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                    fontSize: 14.0,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -594,18 +633,19 @@ class _NoticiaScreenState extends State<NoticiaScreen> {
                           IconButton(
                             icon: const Icon(Icons.edit),
                             onPressed: () {
-                              _showAddNoticiaForm(context,
-                                  noticiaParaEditar: noticia);
+                              _showAddNoticiaForm(
+                                context,
+                                noticiaParaEditar: noticia,
+                              );
                             },
                           ),
-                          
+
                           IconButton(
                             icon: const Icon(Icons.delete),
                             onPressed: () {
                               _confirmarYEliminarNoticia(noticia);
                             },
                           ),
-                          
                         ],
                       ),
                     ],

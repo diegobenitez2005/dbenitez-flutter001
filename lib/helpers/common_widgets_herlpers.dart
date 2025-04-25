@@ -1,4 +1,5 @@
 import 'package:diego/constants/constants.dart';
+import 'package:diego/presentation/categorias_screen.dart';
 import 'package:diego/presentation/contador_screen.dart';
 import 'package:diego/presentation/login_screen.dart';
 import 'package:diego/presentation/quote_screen.dart';
@@ -114,6 +115,17 @@ class CommonWidgetsHelper {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const NoticiaScreen()),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.category),
+            title: const Text('Categorías'),
+            onTap: () {
+              // Acción para la configuración
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CategoriaScreen()),
               );
             },
           ),

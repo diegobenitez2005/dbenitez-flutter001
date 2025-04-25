@@ -1,6 +1,6 @@
+import 'package:diego/constants/constants.dart';
 
 class Noticia {
-
   Noticia({
     this.id,
     required this.titulo,
@@ -8,6 +8,7 @@ class Noticia {
     required this.fuente,
     required this.publicadaEl,
     required this.urlImagen,
+    required this.categoriaId,
   });
 
   factory Noticia.fromJson(Map<String, dynamic> json) {
@@ -18,6 +19,7 @@ class Noticia {
       fuente: json['fuente'] ?? 'Fuente desconocida',
       publicadaEl: DateTime.parse(json['publicadaEl']),
       urlImagen: json['urlImagen'] ?? 'Sin imagen',
+      categoriaId: json['categoria'] ?? Constants.defaultCategoriaId, // ID de la categoría (opcional, para operaciones CRUD)
     );
   }
   final String? id;
@@ -26,4 +28,20 @@ class Noticia {
   final String fuente;
   final DateTime publicadaEl;
   final String urlImagen;
+  final String? categoriaId; // ID de la categoría (opcional, para operaciones CRUD)
+
+  // Método para obtener la categoría con valor por defecto
+  
+
+  // Método para convertir a JSON (útil para crear/actualizar noticias)
+  Map<String, dynamic> toJson() {
+    return {
+      'titulo': titulo,
+      'descripcion': descripcion,
+      'fuente': fuente,
+      'publicadaEl': publicadaEl.toIso8601String(),
+      'urlImagen': urlImagen,
+      'categoria': categoriaId, // ID de la categoría (opcional, para operaciones CRUD)
+    };
+  }
 }
