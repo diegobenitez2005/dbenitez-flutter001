@@ -1,4 +1,5 @@
-import 'package:diego/api/service/categorias_service.dart';
+import 'package:diego/api/service/categoria_service.dart';
+import 'package:diego/data/repositories/categorias_repository.dart';
 import 'package:diego/domain/entities/categoria.dart';
 import 'package:diego/exceptions/api_exceptions.dart';
 import 'package:diego/helpers/error_helper.dart';
@@ -12,7 +13,7 @@ class CategoriaScreen extends StatefulWidget {
 }
 
 class _CategoriaScreenState extends State<CategoriaScreen> {
-  final CategoriaService _categoriaService = CategoriaService();
+  final CategoriaRepository _categoriaRepository = CategoriaRepository();
   List<Categoria> categorias = [];
   bool isLoading = false;
   bool hasError = false;
@@ -30,7 +31,7 @@ class _CategoriaScreenState extends State<CategoriaScreen> {
     });
 
     try {
-      final fetchedCategorias = await _categoriaService.getCategorias();
+      final fetchedCategorias = await _categoriaRepository.getCategorias();
       setState(() {
         categorias = fetchedCategorias;
         isLoading = false;
@@ -67,7 +68,7 @@ class _CategoriaScreenState extends State<CategoriaScreen> {
           descripcion: nuevaCategoriaData['descripcion'],
         );
 
-        await _categoriaService.crearCategoria(
+        await _categoriaRepository.crearCategoria(
           nuevaCategoria,
         ); // Llama al servicio
         _loadCategorias(); // Recarga las categorías
@@ -160,7 +161,10 @@ class _CategoriaScreenState extends State<CategoriaScreen> {
           descripcion: categoriaEditadaData['descripcion'],
         );
 
-        await _categoriaService.editarCategoria(categoriaEditada.id, categoriaEditada);
+        await _categoriaRepository.editarCategoria(
+          categoriaEditada.id,
+          categoriaEditada,
+        );
         _loadCategorias();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Categoría editada exitosamente')),
@@ -198,7 +202,7 @@ class _CategoriaScreenState extends State<CategoriaScreen> {
 
     if (confirmacion == true) {
       try {
-        await _categoriaService.eliminarCategoria(categoria.id);
+        await _categoriaRepository.eliminarCategoria(categoria.id);
         _loadCategorias();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Categoría eliminada exitosamente')),
@@ -215,54 +219,67 @@ class _CategoriaScreenState extends State<CategoriaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Categorías')),
-      body:
-          isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : hasError
-              ? const Center(
-                child: Text(
-                  'Ocurrió un error al cargar las categorías.',
-                  style: TextStyle(color: Colors.red, fontSize: 16),
-                ),
-              )
-              : categorias.isEmpty
-              ? const Center(
-                child: Text(
-                  'No hay categorías disponibles.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              )
-              : ListView.builder(
-                itemCount: categorias.length,
-                itemBuilder: (context, index) {
-                  final categoria = categorias[index];
-                  return ListTile(
-                    title: Text(categoria.nombre),
-                    subtitle: Text(
-                      categoria.descripcion.isEmpty
-                          ? 'ID: ${categoria.id}'
-                          : categoria.descripcion,
-                    ),
-                    leading: const Icon(Icons.category),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () => _editarCategoria(categoria),
-                          tooltip: 'Editar categoría',
+      body: RefreshIndicator(
+        onRefresh: _loadCategorias,
+        child:
+            isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : hasError
+                ? const Center(
+                  child: Text(
+                    'Ocurrió un error al cargar las categorías.',
+                    style: TextStyle(color: Colors.red, fontSize: 16),
+                  ),
+                )
+                : categorias.isEmpty
+                ? ListView(
+                  // Envuelve Center en ListView para que RefreshIndicator funcione
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: const [
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 100.0),
+                        child: Text(
+                          'No hay categorías disponibles.',
+                          style: TextStyle(fontSize: 16),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed:
-                              () => _confirmarEliminarCategoria(categoria),
-                          tooltip: 'Eliminar categoría',
-                        ),
-                      ],
+                      ),
                     ),
-                  );
-                },
-              ),
+                  ],
+                )
+                : ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: categorias.length,
+                  itemBuilder: (context, index) {
+                    final categoria = categorias[index];
+                    return ListTile(
+                      title: Text(categoria.nombre),
+                      subtitle: Text(
+                        categoria.descripcion.isEmpty
+                            ? 'ID: ${categoria.id}'
+                            : categoria.descripcion,
+                      ),
+                      leading: const Icon(Icons.category),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () => _editarCategoria(categoria),
+                            tooltip: 'Editar categoría',
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed:
+                                () => _confirmarEliminarCategoria(categoria),
+                            tooltip: 'Eliminar categoría',
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _agregarCategoria,
         tooltip: 'Agregar Categoría',

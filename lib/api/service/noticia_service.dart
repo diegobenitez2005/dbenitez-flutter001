@@ -1,220 +1,183 @@
 import 'package:diego/constants/constants.dart';
-import 'package:diego/data/repositories/noticia_repository.dart';
 import 'package:diego/domain/entities/noticia.dart';
 import 'package:diego/exceptions/api_exceptions.dart';
-import 'package:diego/helpers/error_helper.dart';
-import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
 class NoticiaService {
-  final NoticiaRepository _noticiaRepository = NoticiaRepository();
-  String _lastErrorMessage = '';
-  int? _lastStatusCode;
-  bool _hasError = false;
-
-  // Getters para información de error
-  String get lastErrorMessage => _lastErrorMessage;
-  int? get lastStatusCode => _lastStatusCode;
-  bool get hasError => _hasError;
-
-  // Método para obtener el mensaje de error y color según el código de estado
-  Map<String, dynamic> getErrorInfo() {
-    return ErrorHelper.getErrorMessageAndColor(_lastStatusCode);
+  NoticiaService() : _dio = Dio() {
+    // Configurar tiempo máximo de espera para todas las peticiones
+    _dio.options.connectTimeout = Duration(
+      milliseconds: Constants.timeOutSeconds * 1000,
+    );
+    _dio.options.receiveTimeout = Duration(
+      milliseconds: Constants.timeOutSeconds * 1000,
+    );
   }
 
-  // Método para obtener las primeras noticias desde la API
-  Future<List<Noticia>> obtenerNoticiasIniciales(
-   
-  ) async {
-    // Reiniciar estado de error
-    _clearError();
+  final Dio _dio;
 
+  /// Obtiene las noticias iniciales desde la API
+  Future<List<Noticia>> fetchInitialNoticias() async {
     try {
-      final noticias = await _noticiaRepository.fetchInitialNoticias();
+      final url = Constants.urlNoticias;
+      final response = await _dio.get(url);
 
-      // Ordenar según los parámetros
-
-      return noticias;
-    } on ApiException catch (e) {
-      // Verificar si es un error de timeout específicamente
-      if (e.statusCode == 408) {
-        _setError(Constants.messageErrorTimeout, e.statusCode);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        return data.map((json) => Noticia.fromJson(json)).toList();
       } else {
-        _setError(e.message, e.statusCode);
+        throw ApiException(
+          'Error al obtener las noticias iniciales',
+          statusCode: response.statusCode,
+        );
       }
-      return [];
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        throw ApiException(
+          'Tiempo de espera agotado',
+          statusCode: 408, // Código HTTP para Request Timeout
+        );
+      }
+      throw ApiException(
+        'Error al conectar con la API de noticias: ${e.message}',
+        statusCode: e.response?.statusCode,
+      );
     } catch (e) {
-      _setError('Error inesperado: $e', null);
-      return [];
+      throw ApiException('Error desconocido: $e');
     }
   }
 
-  // Método para obtener noticias paginadas desde la API
-  Future<List<Noticia>> obtenerNoticiasPaginadas(
-    int numeroPagina, {
-    int tamanoPagina = Constants.pageSize,
+  /// Obtiene noticias paginadas desde la API
+  Future<List<Noticia>> fetchPaginatedNoticias(
+    int pageNumber, {
+    int pageSize = Constants.pageSize,
   }) async {
-    // Reiniciar estado de error
-    _clearError();
-
-    // Validar parámetros
-    if (numeroPagina < 1) {
-      _setError('El número de página debe ser mayor o igual a 1.', 400);
-      return [];
-    }
-
-    if (tamanoPagina <= 0) {
-      _setError('El tamaño de página debe ser mayor que 0.', 400);
-      return [];
-    }
-
     try {
-      final noticias = await _noticiaRepository.fetchPaginatedNoticias(
-        numeroPagina,
-        pageSize: tamanoPagina,
-      );
+      final url = Constants.urlNoticias;
+      final response = await _dio.get(url);
 
-      return noticias;
-    } on ApiException catch (e) {
-      // Verificar si es un error de timeout específicamente
-      if (e.statusCode == 408) {
-        _setError(Constants.messageErrorTimeout, e.statusCode);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        return data.map((json) => Noticia.fromJson(json)).toList();
       } else {
-        _setError(e.message, e.statusCode);
+        throw ApiException(
+          'Error al obtener las noticias paginadas',
+          statusCode: response.statusCode,
+        );
       }
-      return [];
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        throw ApiException('Tiempo de espera agotado', statusCode: 408);
+      }
+      throw ApiException(
+        'Error al conectar con la API de noticias: ${e.message}',
+        statusCode: e.response?.statusCode,
+      );
     } catch (e) {
-      _setError('Error inesperado: $e', null);
-      return [];
+      throw ApiException('Error desconocido: $e');
     }
   }
 
-  // Método para crear una noticia
-  Future<bool> crearNoticia(Noticia noticia) async {
-    // Reiniciar estado de error
-    _clearError();
-
+  /// Crea una nueva noticia
+  Future<void> crearNoticia(Noticia noticia) async {
     try {
-      // Validar datos de la noticia
-      _validarNoticia(noticia);
+      final url = Constants.urlNoticias;
+      final noticiaJson = {
+        'titulo': noticia.titulo,
+        'descripcion': noticia.descripcion,
+        'fuente': noticia.fuente,
+        'publicadaEl': noticia.publicadaEl.toIso8601String(),
+        'urlImagen': noticia.urlImagen,
+        'categoria': noticia.categoriaId,
+      };
 
-      // Llamar al repositorio para crear la noticia
-      await _noticiaRepository.crearNoticia(noticia);
-      return true;
-    } on ApiException catch (e) {
-      // Verificar si es un error de timeout específicamente
-      if (e.statusCode == 408) {
-        _setError(Constants.messageErrorTimeout, e.statusCode);
-      } else {
-        _setError(e.message, e.statusCode);
+      final response = await _dio.post(url, data: noticiaJson);
+
+      if (response.statusCode != 201 && response.statusCode != 200) {
+        throw ApiException(
+          'Error al crear la noticia',
+          statusCode: response.statusCode,
+        );
       }
-      return false;
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        throw ApiException('Tiempo de espera agotado', statusCode: 408);
+      }
+      throw ApiException(
+        'Error al conectar con la API de noticias: ${e.message}',
+        statusCode: e.response?.statusCode,
+      );
     } catch (e) {
-      _setError('Error inesperado: $e', null);
-      return false;
+      throw ApiException('Error desconocido: $e');
     }
   }
 
-  // Método para actualizar una noticia existente
-  Future<bool> actualizarNoticia(Noticia noticia) async {
-    // Reiniciar estado de error
-    _clearError();
-
-    // Validar que la noticia tenga ID
-    if (noticia.id == null || noticia.id!.isEmpty) {
-      _setError('No se puede actualizar una noticia sin ID', 400);
-      return false;
-    }
-
+  /// Actualiza una noticia existente
+  Future<void> actualizarNoticia(String id, Noticia noticia) async {
     try {
-      // Validar datos de la noticia
-      _validarNoticia(noticia);
+      final url = '${Constants.urlNoticias}/$id';
+      final noticiaJson = {
+        'titulo': noticia.titulo,
+        'descripcion': noticia.descripcion,
+        'fuente': noticia.fuente,
+        'publicadaEl': noticia.publicadaEl.toIso8601String(),
+        'urlImagen': noticia.urlImagen,
+        'categoria' : noticia.categoriaId,
+      };
 
-      // Llamar al repositorio para actualizar la noticia
-      await _noticiaRepository.actualizarNoticia(noticia.id!, noticia);
-      return true;
-    } on ApiException catch (e) {
-      // Verificar si es un error de timeout específicamente
-      if (e.statusCode == 408) {
-        _setError(Constants.messageErrorTimeout, e.statusCode);
-      } else {
-        _setError(e.message, e.statusCode);
+      final response = await _dio.put(url, data: noticiaJson);
+
+      if (response.statusCode != 200) {
+        throw ApiException(
+          'Error al actualizar la noticia',
+          statusCode: response.statusCode,
+        );
       }
-      return false;
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        throw ApiException('Tiempo de espera agotado', statusCode: 408);
+      }
+      throw ApiException(
+        'Error al conectar con la API de noticias: ${e.message}',
+        statusCode: e.response?.statusCode,
+      );
     } catch (e) {
-      _setError('Error inesperado: $e', null);
-      return false;
+      throw ApiException('Error desconocido: $e');
     }
   }
 
-  // Método para eliminar una noticia
-  Future<bool> eliminarNoticia(String id) async {
-    // Reiniciar estado de error
-    _clearError();
-
-    // Validar que tengamos un ID
-    if (id.isEmpty) {
-      _setError('No se puede eliminar una noticia sin ID', 400);
-      return false;
-    }
-
+  /// Elimina una noticia por su ID
+  Future<void> eliminarNoticia(String id) async {
     try {
-      // Llamar al repositorio para eliminar la noticia
-      await _noticiaRepository.eliminarNoticia(id);
-      return true;
-    } on ApiException catch (e) {
-      // Verificar si es un error de timeout específicamente
-      if (e.statusCode == 408) {
-        _setError(Constants.messageErrorTimeout, e.statusCode);
-      } else {
-        _setError(e.message, e.statusCode);
+      final url = '${Constants.urlNoticias}/$id';
+      final response = await _dio.delete(url);
+
+      if (response.statusCode != 200 && response.statusCode != 204) {
+        throw ApiException(
+          'Error al eliminar la noticia',
+          statusCode: response.statusCode,
+        );
       }
-      return false;
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        throw ApiException('Tiempo de espera agotado', statusCode: 408);
+      }
+      throw ApiException(
+        'Error al conectar con la API de noticias: ${e.message}',
+        statusCode: e.response?.statusCode,
+      );
     } catch (e) {
-      _setError('Error inesperado: $e', null);
-      return false;
+      throw ApiException('Error desconocido: $e');
     }
-  }
-
-  // Método privado para validar una noticia
-  void _validarNoticia(Noticia noticia) {
-    if (noticia.titulo.isEmpty) {
-      throw ApiException(
-        'El título de la noticia no puede estar vacío.',
-        statusCode: 400,
-      );
-    }
-    if (noticia.descripcion.isEmpty) {
-      throw ApiException(
-        'La descripción de la noticia no puede estar vacía.',
-        statusCode: 400,
-      );
-    }
-    if (noticia.fuente.isEmpty) {
-      throw ApiException(
-        'La fuente de la noticia no puede estar vacía.',
-        statusCode: 400,
-      );
-    }
-    if (noticia.publicadaEl.isAfter(DateTime.now())) {
-      throw ApiException(
-        'La fecha de publicación no puede estar en el futuro.',
-        statusCode: 400,
-      );
-    }
-  }
-
-  // Método para establecer un error
-  void _setError(String message, int? statusCode) {
-    _hasError = true;
-    _lastErrorMessage = message;
-    _lastStatusCode = statusCode;
-    debugPrint('Error: $message (Código: $statusCode)');
-  }
-
-  // Método para limpiar el estado de error
-  void _clearError() {
-    _hasError = false;
-    _lastErrorMessage = '';
-    _lastStatusCode = null;
   }
 }
