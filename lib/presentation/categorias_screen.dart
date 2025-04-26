@@ -5,7 +5,6 @@ import 'package:diego/exceptions/api_exceptions.dart';
 import 'package:diego/helpers/error_helper.dart';
 import 'package:flutter/material.dart';
 
-
 class CategoriaScreen extends StatefulWidget {
   const CategoriaScreen({Key? key}) : super(key: key);
 
@@ -220,54 +219,67 @@ class _CategoriaScreenState extends State<CategoriaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Categorías')),
-      body:
-          isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : hasError
-              ? const Center(
-                child: Text(
-                  'Ocurrió un error al cargar las categorías.',
-                  style: TextStyle(color: Colors.red, fontSize: 16),
-                ),
-              )
-              : categorias.isEmpty
-              ? const Center(
-                child: Text(
-                  'No hay categorías disponibles.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              )
-              : ListView.builder(
-                itemCount: categorias.length,
-                itemBuilder: (context, index) {
-                  final categoria = categorias[index];
-                  return ListTile(
-                    title: Text(categoria.nombre),
-                    subtitle: Text(
-                      categoria.descripcion.isEmpty
-                          ? 'ID: ${categoria.id}'
-                          : categoria.descripcion,
-                    ),
-                    leading: const Icon(Icons.category),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () => _editarCategoria(categoria),
-                          tooltip: 'Editar categoría',
+      body: RefreshIndicator(
+        onRefresh: _loadCategorias,
+        child:
+            isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : hasError
+                ? const Center(
+                  child: Text(
+                    'Ocurrió un error al cargar las categorías.',
+                    style: TextStyle(color: Colors.red, fontSize: 16),
+                  ),
+                )
+                : categorias.isEmpty
+                ? ListView(
+                  // Envuelve Center en ListView para que RefreshIndicator funcione
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: const [
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 100.0),
+                        child: Text(
+                          'No hay categorías disponibles.',
+                          style: TextStyle(fontSize: 16),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed:
-                              () => _confirmarEliminarCategoria(categoria),
-                          tooltip: 'Eliminar categoría',
-                        ),
-                      ],
+                      ),
                     ),
-                  );
-                },
-              ),
+                  ],
+                )
+                : ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: categorias.length,
+                  itemBuilder: (context, index) {
+                    final categoria = categorias[index];
+                    return ListTile(
+                      title: Text(categoria.nombre),
+                      subtitle: Text(
+                        categoria.descripcion.isEmpty
+                            ? 'ID: ${categoria.id}'
+                            : categoria.descripcion,
+                      ),
+                      leading: const Icon(Icons.category),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () => _editarCategoria(categoria),
+                            tooltip: 'Editar categoría',
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed:
+                                () => _confirmarEliminarCategoria(categoria),
+                            tooltip: 'Eliminar categoría',
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _agregarCategoria,
         tooltip: 'Agregar Categoría',

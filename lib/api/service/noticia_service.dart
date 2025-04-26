@@ -92,6 +92,7 @@ class NoticiaService {
         'fuente': noticia.fuente,
         'publicadaEl': noticia.publicadaEl.toIso8601String(),
         'urlImagen': noticia.urlImagen,
+        'categoria': noticia.categoriaId,
       };
 
       final response = await _dio.post(url, data: noticiaJson);
@@ -127,6 +128,7 @@ class NoticiaService {
         'fuente': noticia.fuente,
         'publicadaEl': noticia.publicadaEl.toIso8601String(),
         'urlImagen': noticia.urlImagen,
+        'categoria' : noticia.categoriaId,
       };
 
       final response = await _dio.put(url, data: noticiaJson);
